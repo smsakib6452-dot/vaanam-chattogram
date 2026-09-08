@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 
+import { assetPath } from "@/lib/assets";
+
 interface EditorialPreloaderProps {
   onComplete: () => void;
 }
@@ -12,20 +14,45 @@ export default function EditorialPreloader({ onComplete }: EditorialPreloaderPro
   const [isDismissed, setIsDismissed] = useState<boolean>(false);
 
   useEffect(() => {
-    // Elegant non-linear easing counter
+    // Pre-buffer hero feast video in the background during preloader
+    const heroSrc = assetPath("/videos/Video-1 (2).mp4");
+    const video = document.createElement("video");
+    video.src = heroSrc;
+    video.preload = "auto";
+    video.muted = true;
+    video.playsInline = true;
+
+    let isVideoBuffered = false;
+    const onBuffer = () => {
+      if (video.readyState >= 3) {
+        isVideoBuffered = true;
+      }
+    };
+    video.addEventListener("canplaythrough", onBuffer);
+    video.addEventListener("canplay", onBuffer);
+    video.addEventListener("loadeddata", onBuffer);
+    video.load();
+
     const startTime = Date.now();
-    const duration = 1800; // 1.8s smooth loading
+    const minDuration = 1800; // 1.8s minimum smooth presentation
+    const maxDuration = 3200; // 3.2s maximum timeout to never hang on slow networks
 
     const updateProgress = () => {
       const elapsed = Date.now() - startTime;
-      const rawProgress = Math.min(elapsed / duration, 1);
-      // Ease out quartic
-      const eased = 1 - Math.pow(1 - rawProgress, 3);
-      const currentVal = Math.floor(eased * 100);
 
+      // If video is buffered or elapsed > minDuration, finish gracefully
+      let targetProgress = Math.min(elapsed / minDuration, 1);
+      if (!isVideoBuffered && elapsed < maxDuration) {
+        targetProgress = Math.min(targetProgress, 0.88);
+      } else if (isVideoBuffered) {
+        targetProgress = Math.min(elapsed / (minDuration * 0.95), 1);
+      }
+
+      const eased = 1 - Math.pow(1 - targetProgress, 3);
+      const currentVal = Math.floor(eased * 100);
       setProgress(currentVal);
 
-      if (rawProgress < 1) {
+      if (targetProgress < 1 && elapsed < maxDuration) {
         requestAnimationFrame(updateProgress);
       } else {
         setProgress(100);
@@ -35,12 +62,18 @@ export default function EditorialPreloader({ onComplete }: EditorialPreloaderPro
             setIsDismissed(true);
             onComplete();
           }, 850);
-        }, 300);
+        }, 250);
       }
     };
 
     const frameId = requestAnimationFrame(updateProgress);
-    return () => cancelAnimationFrame(frameId);
+    return () => {
+      cancelAnimationFrame(frameId);
+      video.removeEventListener("canplaythrough", onBuffer);
+      video.removeEventListener("canplay", onBuffer);
+      video.removeEventListener("loadeddata", onBuffer);
+      video.src = "";
+    };
   }, [onComplete]);
 
   if (isDismissed) return null;

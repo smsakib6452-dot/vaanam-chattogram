@@ -33,62 +33,119 @@ export default function VideoScrubber({
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [videoLoaded, setVideoLoaded] = useState<boolean>(false);
   const [isInViewport, setIsInViewport] = useState<boolean>(false);
+  const [shouldPreload, setShouldPreload] = useState<boolean>(priority);
 
-  // 1. Single-Active Video Manager: Only decode and play when visible in viewport
+  const isInViewportRef = useRef<boolean>(false);
+  isInViewportRef.current = isInViewport;
+
+  // 1. Two-Stage Observer: Preload early (900px ahead) + Play only when on-screen
   useEffect(() => {
     const container = containerRef.current;
     const video = videoRef.current;
     if (!container || !video) return;
 
-    const observer = new IntersectionObserver(
+    // A. Early Proximity Buffer Observer (Starts network buffering 900px before reaching screen)
+    const preloadObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setShouldPreload(true);
+          if (video && video.preload !== "auto") {
+            video.preload = "auto";
+            video.load();
+          }
+        }
+      },
+      { rootMargin: "900px 0px", threshold: 0 }
+    );
+
+    // B. Active Viewport Observer (Starts 60fps playback strictly when in view)
+    const activeObserver = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
         if (entry.isIntersecting) {
           setIsInViewport(true);
-          video.play().catch(() => {});
-          setIsPlaying(true);
+          // Only play if video has enough buffer, otherwise buffer handler will play it
+          if (video && video.readyState >= 3) {
+            video.play().catch(() => {});
+            setIsPlaying(true);
+          }
         } else {
           setIsInViewport(false);
           video.pause();
           setIsPlaying(false);
         }
       },
-      {
-        rootMargin: "100px 0px",
-        threshold: 0.05,
-      }
+      { rootMargin: "20px 0px", threshold: 0.05 }
     );
 
-    observer.observe(container);
-    return () => observer.disconnect();
+    preloadObserver.observe(container);
+    activeObserver.observe(container);
+
+    return () => {
+      preloadObserver.disconnect();
+      activeObserver.disconnect();
+    };
   }, []);
 
-  // 2. Manage video loaded state safely
+  // 2. Robust Video Buffer Readiness (Prevents 1-frame stutter on public internet)
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !videoSrc) return;
 
-    const onCanPlay = () => {
+    const checkAndActivate = () => {
+      if (!video) return;
+
+      // Ensure we have future frames buffered (at least 0.8s ahead or canplaythrough)
+      const hasBufferedAhead =
+        video.buffered.length > 0 &&
+        (video.buffered.end(0) - video.currentTime >= 0.8 ||
+          video.buffered.end(0) >= (video.duration || 10) * 0.75);
+
+      if (video.readyState >= 3 || hasBufferedAhead) {
+        setVideoLoaded(true);
+        if (isInViewportRef.current) {
+          video.play().catch(() => {});
+          setIsPlaying(true);
+        }
+      }
+    };
+
+    const onCanPlayThrough = () => {
       setVideoLoaded(true);
-      if (isInViewport) {
+      if (isInViewportRef.current) {
         video.play().catch(() => {});
         setIsPlaying(true);
       }
     };
 
-    video.addEventListener("canplay", onCanPlay);
-    video.addEventListener("loadeddata", onCanPlay);
+    const onPlaying = () => {
+      setVideoLoaded(true);
+      setIsPlaying(true);
+    };
+
+    const onWaiting = () => {
+      // Buffer catch-up: gently wait for next chunk without freezing UI
+      if (video && video.readyState < 3) {
+        // let the buffer accumulate
+      }
+    };
+
+    video.addEventListener("canplaythrough", onCanPlayThrough);
+    video.addEventListener("canplay", checkAndActivate);
+    video.addEventListener("progress", checkAndActivate);
+    video.addEventListener("playing", onPlaying);
+    video.addEventListener("waiting", onWaiting);
 
     if (video.readyState >= 3) {
-      setVideoLoaded(true);
-      if (isInViewport) {
-        video.play().catch(() => {});
-      }
+      checkAndActivate();
     }
 
     return () => {
-      video.removeEventListener("canplay", onCanPlay);
-      video.removeEventListener("loadeddata", onCanPlay);
+      video.removeEventListener("canplaythrough", onCanPlayThrough);
+      video.removeEventListener("canplay", checkAndActivate);
+      video.removeEventListener("progress", checkAndActivate);
+      video.removeEventListener("playing", onPlaying);
+      video.removeEventListener("waiting", onWaiting);
     };
   }, [videoSrc, isInViewport]);
 
@@ -126,8 +183,9 @@ export default function VideoScrubber({
           playsInline
           muted
           loop
-          preload={priority ? "auto" : "metadata"}
+          preload={priority || shouldPreload ? "auto" : "none"}
           disablePictureInPicture
+          disableRemotePlayback
           className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-700 ease-out ${
             videoLoaded ? "opacity-100" : "opacity-0"
           }`}
@@ -136,6 +194,7 @@ export default function VideoScrubber({
             willChange: "transform",
             backfaceVisibility: "hidden",
             transformOrigin: "center center",
+            contain: "paint",
           }}
         />
       )}
