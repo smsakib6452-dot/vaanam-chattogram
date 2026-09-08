@@ -5,6 +5,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import VideoScrubber from "@/components/video/VideoScrubber";
+import { assetPath } from "@/lib/assets";
 
 export default function DiningExperience() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -78,7 +79,7 @@ export default function DiningExperience() {
           <div className="gallery-card md:col-span-4 bg-[#FAF8F5] border border-[rgba(43,35,32,0.1)] rounded-2xl p-5 shadow-md group hover:shadow-xl transition-all duration-300">
             <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-4 bg-[#EDE8E1]">
               <Image
-                src="/images/IMAGE 01 — HERO.jpg"
+                src={assetPath("/images/IMAGE 01 — HERO.jpg")}
                 alt="Handcrafted Kansha brass dining ware"
                 fill
                 sizes="(max-width: 768px) 100vw, 33vw"
@@ -100,7 +101,7 @@ export default function DiningExperience() {
           <div className="gallery-card md:col-span-4 md:mt-12 bg-[#FAF8F5] border border-[rgba(43,35,32,0.1)] rounded-2xl p-5 shadow-md group hover:shadow-xl transition-all duration-300">
             <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-4 bg-[#EDE8E1]">
               <Image
-                src="/images/IMAGE 04 — BANGLADESHI EDITORIAL DINING.jpg"
+                src={assetPath("/images/IMAGE 04 — BANGLADESHI EDITORIAL DINING.jpg")}
                 alt="Coastal dining table setting"
                 fill
                 sizes="(max-width: 768px) 100vw, 33vw"
@@ -122,7 +123,7 @@ export default function DiningExperience() {
           <div className="gallery-card md:col-span-4 bg-[#FAF8F5] border border-[rgba(43,35,32,0.1)] rounded-2xl p-5 shadow-md group hover:shadow-xl transition-all duration-300">
             <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-4 bg-[#EDE8E1]">
               <Image
-                src="/images/IMAGE 03 — BANGLADESHI SPICE COMPOSITION.jpg"
+                src={assetPath("/images/IMAGE 03 — BANGLADESHI SPICE COMPOSITION.jpg")}
                 alt="Aromatic coastal spices"
                 fill
                 sizes="(max-width: 768px) 100vw, 33vw"

@@ -4,6 +4,8 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 import { Play, Pause } from "lucide-react";
 
+import { assetPath } from "@/lib/assets";
+
 interface VideoScrubberProps {
   videoSrc?: string;
   fallbackImage: string;
@@ -108,12 +110,8 @@ export default function VideoScrubber({
   const currentScale = 1.0 + Math.max(0, Math.min(progress, 1)) * zoomIntensity;
   const currentY = (Math.max(0, Math.min(progress, 1)) - 0.5) * -14;
 
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
-  const resolvedVideoSrc = videoSrc
-    ? videoSrc.startsWith("http")
-      ? videoSrc
-      : `${basePath}${videoSrc}`
-    : undefined;
+  const resolvedVideoSrc = videoSrc ? assetPath(videoSrc) : undefined;
+  const resolvedFallbackImage = assetPath(fallbackImage);
 
   return (
     <div
@@ -154,7 +152,7 @@ export default function VideoScrubber({
         }}
       >
         <Image
-          src={fallbackImage}
+          src={resolvedFallbackImage}
           alt={alt}
           fill
           priority={priority}

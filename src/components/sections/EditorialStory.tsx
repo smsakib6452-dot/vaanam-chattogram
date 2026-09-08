@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { assetPath } from "@/lib/assets";
 
 export default function EditorialStory() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -130,7 +131,7 @@ export default function EditorialStory() {
             className="relative aspect-[4/5] sm:aspect-[16/11] lg:aspect-[4/5] w-full rounded-xl overflow-hidden shadow-2xl bg-[#EDE8E1]"
           >
             <Image
-              src="/images/IMAGE 01 — HERO.jpg"
+              src={assetPath("/images/IMAGE 01 — HERO.jpg")}
               alt="Editorial presentation of Chattogram feast on warm off-white studio background"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
