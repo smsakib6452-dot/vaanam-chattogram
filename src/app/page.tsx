@@ -27,14 +27,28 @@ export default function Home() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    // Initialize Lenis smooth scroll
+    // On touch devices or mobile screens, DO NOT initialize Lenis.
+    // Native mobile browser 120Hz GPU scrolling provides zero lag and buttery smoothness.
+    const isTouchOrMobile =
+      typeof window !== "undefined" &&
+      ("ontouchstart" in window ||
+        navigator.maxTouchPoints > 0 ||
+        window.innerWidth < 768 ||
+        window.matchMedia("(pointer: coarse)").matches);
+
+    if (isTouchOrMobile) {
+      // ScrollTrigger uses native window scroll automatically
+      return;
+    }
+
+    // Initialize Lenis smooth scroll for desktop pointer environments
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 1.1,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
-      touchMultiplier: 1.8,
+      touchMultiplier: 1.0,
     });
 
     lenis.on("scroll", ScrollTrigger.update);

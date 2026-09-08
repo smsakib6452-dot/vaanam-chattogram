@@ -10,8 +10,8 @@ export default function CustomCursor() {
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
   useEffect(() => {
-    // Only enable custom cursor on fine pointer devices
-    if (window.matchMedia("(pointer: coarse)").matches) {
+    // Only enable custom cursor on fine pointer devices with desktop width
+    if (window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768) {
       return;
     }
 
@@ -87,7 +87,10 @@ export default function CustomCursor() {
     };
   }, [isVisible]);
 
-  if (typeof window !== "undefined" && window.matchMedia?.("(pointer: coarse)").matches) {
+  if (
+    typeof window !== "undefined" &&
+    (window.matchMedia?.("(pointer: coarse)").matches || window.innerWidth < 768)
+  ) {
     return null;
   }
 
@@ -97,7 +100,7 @@ export default function CustomCursor() {
       <div
         ref={cursorDotRef}
         aria-hidden="true"
-        className={`fixed top-0 left-0 -ml-1 -mt-1 w-2 h-2 rounded-full bg-[#2B2320] pointer-events-none z-[99999] transition-opacity duration-300 ${
+        className={`hidden md:block fixed top-0 left-0 -ml-1 -mt-1 w-2 h-2 rounded-full bg-[#2B2320] pointer-events-none z-[99999] transition-opacity duration-300 ${
           isVisible ? "opacity-100" : "opacity-0"
         } ${isHovered ? "scale-0" : "scale-100"}`}
         style={{ willChange: "transform" }}
@@ -107,7 +110,7 @@ export default function CustomCursor() {
       <div
         ref={cursorRingRef}
         aria-hidden="true"
-        className={`fixed top-0 left-0 pointer-events-none z-[99998] -ml-5 -mt-5 flex items-center justify-center transition-all duration-300 ${
+        className={`hidden md:flex fixed top-0 left-0 pointer-events-none z-[99998] -ml-5 -mt-5 items-center justify-center transition-all duration-300 ${
           isVisible ? "opacity-100" : "opacity-0"
         } ${
           cursorText

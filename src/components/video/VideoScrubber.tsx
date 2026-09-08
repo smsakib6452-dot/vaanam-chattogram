@@ -180,6 +180,7 @@ export default function VideoScrubber({
         <video
           ref={videoRef}
           src={resolvedVideoSrc}
+          autoPlay
           playsInline
           muted
           loop

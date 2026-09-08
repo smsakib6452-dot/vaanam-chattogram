@@ -99,7 +99,7 @@ export default function HeroSection({ onOpenReservation }: HeroSectionProps) {
     <section
       id="hero"
       ref={containerRef}
-      className="relative w-full h-[240vh] bg-[#FAFAF8]"
+      className="relative w-full h-[150vh] md:h-[240vh] bg-[#FAFAF8]"
     >
       {/* Pinned Viewport Container */}
       <div
@@ -122,88 +122,139 @@ export default function HeroSection({ onOpenReservation }: HeroSectionProps) {
           </div>
         </div>
 
-        {/* Editorial culinary annotations (Fade in as headline fades out) */}
+        {/* Editorial culinary annotations (Desktop: 4 corner callouts; Mobile: clean horizontal swipe strip) */}
         <div
           ref={calloutsRef}
-          className="absolute inset-0 pointer-events-none max-w-7xl mx-auto p-6 sm:p-12 flex flex-col justify-between transition-opacity duration-300 z-20 opacity-0"
+          className="absolute inset-0 pointer-events-none z-20 opacity-0 transition-opacity duration-300"
         >
-          {/* Top Left Annotation */}
-          <div className="self-start mt-24 bg-[rgba(250,250,248,0.95)] border border-[rgba(43,35,32,0.12)] rounded-2xl p-3.5 shadow-xl text-left max-w-xs pointer-events-auto">
-            <div className="flex items-center justify-between text-[10px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
-              <span>ITEM 01 • MEZBANI GOSHT</span>
-              <span>SLOW-SIMMERED</span>
+          {/* Desktop 4 Corner Annotations */}
+          <div className="hidden md:flex absolute inset-0 max-w-7xl mx-auto p-8 sm:p-12 flex-col justify-between pointer-events-none">
+            {/* Top Left Annotation */}
+            <div className="self-start mt-20 bg-[rgba(250,250,248,0.95)] border border-[rgba(43,35,32,0.12)] rounded-2xl p-3.5 shadow-xl text-left max-w-xs pointer-events-auto">
+              <div className="flex items-center justify-between text-[10px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
+                <span>ITEM 01 • MEZBANI GOSHT</span>
+                <span>SLOW-SIMMERED</span>
+              </div>
+              <p className="text-xs text-[#2B2320] font-medium leading-snug">
+                Tender beef simmered in mustard oil, roasted spices, and ground radhuni.
+              </p>
             </div>
-            <p className="text-xs text-[#2B2320] font-medium leading-snug">
-              Tender beef simmered in mustard oil, roasted spices, and ground radhuni.
-            </p>
+
+            {/* Top Right Annotation */}
+            <div className="self-end mt-24 bg-[rgba(250,250,248,0.95)] border border-[rgba(43,35,32,0.12)] rounded-2xl p-3.5 shadow-xl text-right max-w-xs pointer-events-auto">
+              <div className="flex items-center justify-between text-[10px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
+                <span>CHINIGURA GRAIN</span>
+                <span>ITEM 02 • POLAO</span>
+              </div>
+              <p className="text-xs text-[#2B2320] font-medium leading-snug">
+                Short-grain aromatic rice perfumed with bay leaf, ghee, and whole cardamom.
+              </p>
+            </div>
+
+            {/* Bottom Left Annotation */}
+            <div className="self-start mb-20 bg-[rgba(250,250,248,0.95)] border border-[rgba(43,35,32,0.12)] rounded-2xl p-3.5 shadow-xl text-left max-w-xs pointer-events-auto">
+              <div className="flex items-center justify-between text-[10px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
+                <span>ITEM 03 • SHORSHE ILISH</span>
+                <span>BAY HARVEST</span>
+              </div>
+              <p className="text-xs text-[#2B2320] font-medium leading-snug">
+                Hilsa steeped in pungent cold-pressed mustard paste and fresh green chillies.
+              </p>
+            </div>
+
+            {/* Bottom Right Annotation */}
+            <div className="self-end mb-20 bg-[rgba(250,250,248,0.95)] border border-[rgba(43,35,32,0.12)] rounded-2xl p-3.5 shadow-xl text-right max-w-xs pointer-events-auto">
+              <div className="flex items-center justify-between text-[10px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
+                <span>ROASTED CHILLI</span>
+                <span>ITEM 04 • ALOO BHORTA</span>
+              </div>
+              <p className="text-xs text-[#2B2320] font-medium leading-snug">
+                Stone-mashed local potatoes with toasted dry chillies and raw mustard oil.
+              </p>
+            </div>
           </div>
 
-          {/* Top Right Annotation */}
-          <div className="self-end mt-28 bg-[rgba(250,250,248,0.95)] border border-[rgba(43,35,32,0.12)] rounded-2xl p-3.5 shadow-xl text-right max-w-xs pointer-events-auto">
-            <div className="flex items-center justify-between text-[10px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
-              <span>CHINIGURA GRAIN</span>
-              <span>ITEM 02 • POLAO</span>
-            </div>
-            <p className="text-xs text-[#2B2320] font-medium leading-snug">
-              Short-grain aromatic rice perfumed with bay leaf, ghee, and whole cardamom.
-            </p>
-          </div>
+          {/* Mobile Non-Colliding Swipeable Cards Strip */}
+          <div className="md:hidden absolute bottom-12 left-0 right-0 px-4 pointer-events-auto">
+            <div className="flex items-stretch gap-2.5 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-none">
+              <div className="snap-center shrink-0 w-[78vw] max-w-[280px] bg-[rgba(250,250,248,0.96)] border border-[rgba(43,35,32,0.12)] rounded-xl p-3.5 shadow-xl">
+                <div className="flex items-center justify-between text-[9px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
+                  <span>01 • MEZBANI GOSHT</span>
+                  <span>SIMMERED</span>
+                </div>
+                <p className="text-xs text-[#2B2320] font-medium leading-snug">
+                  Tender beef simmered in mustard oil, roasted spices, and ground radhuni.
+                </p>
+              </div>
 
-          {/* Bottom Left Annotation */}
-          <div className="self-start mb-24 bg-[rgba(250,250,248,0.95)] border border-[rgba(43,35,32,0.12)] rounded-2xl p-3.5 shadow-xl text-left max-w-xs pointer-events-auto">
-            <div className="flex items-center justify-between text-[10px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
-              <span>ITEM 03 • SHORSHE ILISH</span>
-              <span>BAY HARVEST</span>
-            </div>
-            <p className="text-xs text-[#2B2320] font-medium leading-snug">
-              Hilsa steeped in pungent cold-pressed mustard paste and fresh green chillies.
-            </p>
-          </div>
+              <div className="snap-center shrink-0 w-[78vw] max-w-[280px] bg-[rgba(250,250,248,0.96)] border border-[rgba(43,35,32,0.12)] rounded-xl p-3.5 shadow-xl">
+                <div className="flex items-center justify-between text-[9px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
+                  <span>02 • POLAO</span>
+                  <span>CHINIGURA</span>
+                </div>
+                <p className="text-xs text-[#2B2320] font-medium leading-snug">
+                  Short-grain aromatic rice perfumed with bay leaf, ghee, and whole cardamom.
+                </p>
+              </div>
 
-          {/* Bottom Right Annotation */}
-          <div className="self-end mb-24 bg-[rgba(250,250,248,0.95)] border border-[rgba(43,35,32,0.12)] rounded-2xl p-3.5 shadow-xl text-right max-w-xs pointer-events-auto">
-            <div className="flex items-center justify-between text-[10px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
-              <span>ROASTED CHILLI</span>
-              <span>ITEM 04 • ALOO BHORTA</span>
+              <div className="snap-center shrink-0 w-[78vw] max-w-[280px] bg-[rgba(250,250,248,0.96)] border border-[rgba(43,35,32,0.12)] rounded-xl p-3.5 shadow-xl">
+                <div className="flex items-center justify-between text-[9px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
+                  <span>03 • SHORSHE ILISH</span>
+                  <span>BAY HARVEST</span>
+                </div>
+                <p className="text-xs text-[#2B2320] font-medium leading-snug">
+                  Hilsa steeped in pungent cold-pressed mustard paste and fresh green chillies.
+                </p>
+              </div>
+
+              <div className="snap-center shrink-0 w-[78vw] max-w-[280px] bg-[rgba(250,250,248,0.96)] border border-[rgba(43,35,32,0.12)] rounded-xl p-3.5 shadow-xl">
+                <div className="flex items-center justify-between text-[9px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
+                  <span>04 • ALOO BHORTA</span>
+                  <span>ROASTED CHILLI</span>
+                </div>
+                <p className="text-xs text-[#2B2320] font-medium leading-snug">
+                  Stone-mashed local potatoes with toasted dry chillies and raw mustard oil.
+                </p>
+              </div>
             </div>
-            <p className="text-xs text-[#2B2320] font-medium leading-snug">
-              Stone-mashed local potatoes with toasted dry chillies and raw mustard oil.
-            </p>
+            <div className="text-center mt-1 text-[9px] font-mono text-[#61534E] uppercase tracking-widest">
+              ← Swipe Dishes →
+            </div>
           </div>
         </div>
 
         {/* Primary Editorial Headline & CTAs (Fades smoothly as user scrolls down) */}
         <div
           ref={textGroupRef}
-          className="relative z-10 text-center max-w-4xl mx-auto px-6 pointer-events-auto transition-transform"
+          className="relative z-10 text-center max-w-4xl mx-auto px-5 sm:px-6 pointer-events-auto transition-transform"
         >
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[rgba(43,35,32,0.12)] bg-[#FAFAF8] mb-6 shadow-sm">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[rgba(43,35,32,0.12)] bg-[#FAFAF8] mb-5 shadow-sm">
             <Sparkles className="w-3.5 h-3.5 text-[#C86D3C]" />
             <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.25em] text-[#61534E]">
               01 — The Taste of Chattogram
             </span>
           </div>
 
-          <h1 className="font-fraunces text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-light tracking-tight text-[#2B2320] leading-[0.95] mb-6">
+          <h1 className="font-fraunces text-4xl sm:text-7xl md:text-8xl lg:text-9xl font-light tracking-tight text-[#2B2320] leading-[0.98] mb-5">
             The Taste of <br className="hidden sm:inline" />
             <span className="italic font-normal">Chattogram.</span>
           </h1>
 
-          <p className="text-sm sm:text-base md:text-lg text-[#61534E] max-w-2xl mx-auto font-inter font-light leading-relaxed mb-8">
+          <p className="text-xs sm:text-base md:text-lg text-[#61534E] max-w-2xl mx-auto font-inter font-light leading-relaxed mb-7">
             A coastal table shaped by spice, fire and tradition. Explore the slow-curated culinary heritage of Bangladesh choreographed to your scroll.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4">
             <button
               type="button"
               onClick={onOpenReservation}
-              className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-[#2B2320] text-[#FAFAF8] text-xs uppercase tracking-widest font-medium hover:bg-[#C86D3C] transition-all duration-300 shadow-lg cursor-pointer"
+              className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-[#2B2320] text-[#FAFAF8] text-xs uppercase tracking-widest font-medium hover:bg-[#C86D3C] transition-all duration-300 shadow-lg cursor-pointer"
             >
               Reserve Table
             </button>
             <a
               href="#story"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-full border border-[rgba(43,35,32,0.2)] hover:border-[#2B2320] text-[#2B2320] text-xs uppercase tracking-widest font-medium transition-all duration-300 bg-[#FAFAF8] cursor-pointer shadow-sm"
+              className="w-full sm:w-auto px-7 py-3.5 rounded-full border border-[rgba(43,35,32,0.2)] hover:border-[#2B2320] text-[#2B2320] text-xs uppercase tracking-widest font-medium transition-all duration-300 bg-[#FAFAF8] cursor-pointer shadow-sm"
             >
               Explore Menu Anatomy
             </a>

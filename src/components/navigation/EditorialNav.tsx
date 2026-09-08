@@ -39,23 +39,23 @@ export default function EditorialNav({ onOpenReservation }: EditorialNavProps) {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-6 sm:px-12 py-5 sm:py-6 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-4 sm:px-12 py-3.5 sm:py-6 ${
         scrolled
-          ? "bg-[rgba(250,250,248,0.88)] backdrop-blur-md border-b border-[rgba(43,35,32,0.06)] py-4"
+          ? "bg-[rgba(250,250,248,0.92)] backdrop-blur-md border-b border-[rgba(43,35,32,0.06)] py-3 sm:py-4 shadow-sm"
           : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Brand Mark */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
           <a
             href="#hero"
             className="flex flex-col group text-left cursor-pointer select-none"
           >
-            <span className="font-fraunces text-2xl sm:text-3xl font-light tracking-tight text-[#2B2320] leading-none group-hover:text-[#C86D3C] transition-colors">
+            <span className="font-fraunces text-xl sm:text-3xl font-light tracking-tight text-[#2B2320] leading-none group-hover:text-[#C86D3C] transition-colors">
               VAANAM
             </span>
-            <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#61534E] mt-1">
+            <span className="font-mono text-[8px] sm:text-[9px] uppercase tracking-[0.25em] sm:tracking-[0.3em] text-[#61534E] mt-0.5 sm:mt-1">
               Chattogram • Coastal Table
             </span>
           </a>
@@ -87,13 +87,13 @@ export default function EditorialNav({ onOpenReservation }: EditorialNavProps) {
         </nav>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <CulinarySoundscape />
 
           <button
             type="button"
             onClick={onOpenReservation}
-            className="px-4 sm:px-5 py-2 rounded-full bg-[#2B2320] text-[#FAFAF8] text-[11px] uppercase tracking-widest font-medium hover:bg-[#C86D3C] transition-all duration-300 shadow-sm cursor-pointer"
+            className="px-3.5 sm:px-5 py-2 rounded-full bg-[#2B2320] text-[#FAFAF8] text-[10px] sm:text-[11px] uppercase tracking-widest font-medium hover:bg-[#C86D3C] transition-all duration-300 shadow-sm cursor-pointer"
           >
             Reserve Table
           </button>
