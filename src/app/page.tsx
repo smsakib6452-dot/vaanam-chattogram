@@ -43,11 +43,12 @@ export default function Home() {
 
     // Initialize Lenis smooth scroll for desktop pointer environments
     const lenis = new Lenis({
-      duration: 1.1,
+      duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
+      wheelMultiplier: 0.95,
       touchMultiplier: 1.0,
     });
 
@@ -58,7 +59,7 @@ export default function Home() {
     };
 
     gsap.ticker.add(updateTicker);
-    gsap.ticker.lagSmoothing(500, 33);
+    gsap.ticker.lagSmoothing(0);
 
     return () => {
       gsap.ticker.remove(updateTicker);

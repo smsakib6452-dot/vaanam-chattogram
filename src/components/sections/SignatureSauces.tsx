@@ -61,7 +61,7 @@ export default function SignatureSauces() {
     <section
       id="sauces"
       ref={containerRef}
-      className="relative w-full md:h-[220vh] bg-[#FAFAF8] border-t border-[rgba(43,35,32,0.06)]"
+      className="relative w-full md:h-[180vh] bg-[#FAFAF8] border-t border-[rgba(43,35,32,0.06)]"
     >
       <div
         ref={stickyRef}
@@ -100,7 +100,7 @@ export default function SignatureSauces() {
           {SAUCES.map((sauce, idx) => (
             <div
               key={sauce.name}
-              className="pointer-events-auto bg-[rgba(250,250,248,0.92)] backdrop-blur-md border border-[rgba(43,35,32,0.12)] p-6 rounded-2xl shadow-xl transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-[#2B2320] group"
+              className="pointer-events-auto bg-[rgba(250,250,248,0.96)] border border-[rgba(43,35,32,0.12)] p-6 rounded-2xl shadow-xl transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-[#2B2320] group"
               style={{
                 transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
               }}

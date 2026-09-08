@@ -33,23 +33,23 @@ export default function HeroSection({ onOpenReservation }: HeroSectionProps) {
           scrollTrigger: {
             trigger: container,
             start: "top top",
-            end: "top -20%",
-            scrub: true,
+            end: "top -15%",
+            scrub: 0.6,
           },
         });
       }
 
-      // Headline fades out and moves up as user scrolls so the feast visual is 100% visible
+      // Headline fades out and moves up smoothly as user scrolls
       if (textGroupRef.current) {
         gsap.to(textGroupRef.current, {
-          y: -140,
+          y: -120,
           opacity: 0,
-          ease: "power2.inOut",
+          ease: "power2.out",
           scrollTrigger: {
             trigger: container,
             start: "top top",
-            end: "top -50%",
-            scrub: true,
+            end: "top -45%",
+            scrub: 0.8,
           },
         });
       }
@@ -58,7 +58,7 @@ export default function HeroSection({ onOpenReservation }: HeroSectionProps) {
       if (calloutsRef.current) {
         gsap.fromTo(
           calloutsRef.current,
-          { opacity: 0, y: 30 },
+          { opacity: 0, y: 24 },
           {
             opacity: 1,
             y: 0,
@@ -66,26 +66,26 @@ export default function HeroSection({ onOpenReservation }: HeroSectionProps) {
             scrollTrigger: {
               trigger: container,
               start: "top -20%",
-              end: "top -60%",
-              scrub: true,
+              end: "top -55%",
+              scrub: 0.8,
             },
           }
         );
       }
 
-      // Video subtle cinematic dolly zoom on scroll
-      if (videoWrapperRef.current) {
+      // Video subtle cinematic dolly zoom on scroll (desktop only)
+      if (videoWrapperRef.current && window.innerWidth >= 768) {
         gsap.fromTo(
           videoWrapperRef.current,
           { scale: 1 },
           {
-            scale: 1.12,
+            scale: 1.08,
             ease: "none",
             scrollTrigger: {
               trigger: container,
               start: "top top",
               end: "bottom bottom",
-              scrub: true,
+              scrub: 1.0,
             },
           }
         );
@@ -99,7 +99,7 @@ export default function HeroSection({ onOpenReservation }: HeroSectionProps) {
     <section
       id="hero"
       ref={containerRef}
-      className="relative w-full h-[150vh] md:h-[240vh] bg-[#FAFAF8]"
+      className="relative w-full h-[140vh] md:h-[180vh] bg-[#FAFAF8]"
     >
       {/* Pinned Viewport Container */}
       <div

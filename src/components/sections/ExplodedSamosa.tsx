@@ -84,7 +84,7 @@ export default function ExplodedSamosa() {
               trigger: container,
               start,
               end,
-              scrub: true,
+              scrub: 0.8,
             },
           }
         );
@@ -98,7 +98,7 @@ export default function ExplodedSamosa() {
     <section
       id="singara"
       ref={containerRef}
-      className="relative w-full md:h-[220vh] bg-[#FAFAF8] border-t border-[rgba(43,35,32,0.06)]"
+      className="relative w-full md:h-[180vh] bg-[#FAFAF8] border-t border-[rgba(43,35,32,0.06)]"
     >
       <div
         ref={stickyRef}
@@ -136,7 +136,7 @@ export default function ExplodedSamosa() {
         <div className="hidden md:block absolute inset-0 pointer-events-none z-20 max-w-7xl mx-auto p-6 sm:p-12">
           {/* CALLOUT 1: Kalo Jeere Pastry Shell (Left-Center) */}
           <div className="samosa-callout-1 absolute left-6 sm:left-14 top-[32%] max-w-xs pointer-events-auto opacity-0">
-            <div className="bg-[rgba(250,250,248,0.92)] backdrop-blur-md border border-[rgba(43,35,32,0.12)] p-3.5 rounded-xl shadow-lg">
+            <div className="bg-[rgba(250,250,248,0.96)] border border-[rgba(43,35,32,0.12)] p-3.5 rounded-xl shadow-lg">
               <div className="flex items-center justify-between text-[9px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
                 <span>CRISP CRUST</span>
                 <span>KALO JEERE</span>
@@ -157,7 +157,7 @@ export default function ExplodedSamosa() {
 
           {/* CALLOUT 2: Steam & Aromatics (Top-Right) */}
           <div className="samosa-callout-2 absolute right-6 sm:right-16 top-[18%] max-w-xs pointer-events-auto opacity-0">
-            <div className="bg-[rgba(250,250,248,0.92)] backdrop-blur-md border border-[rgba(43,35,32,0.12)] p-3.5 rounded-xl shadow-lg text-right">
+            <div className="bg-[rgba(250,250,248,0.96)] border border-[rgba(43,35,32,0.12)] p-3.5 rounded-xl shadow-lg text-right">
               <div className="flex items-center justify-between text-[9px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
                 <span>WARM STEAM</span>
                 <span>AROMATICS</span>
@@ -171,7 +171,7 @@ export default function ExplodedSamosa() {
 
           {/* CALLOUT 3: Diced Spiced Potatoes & Peanuts (Right-Center) */}
           <div className="samosa-callout-3 absolute right-6 sm:right-20 top-[48%] max-w-xs pointer-events-auto opacity-0">
-            <div className="bg-[rgba(250,250,248,0.92)] backdrop-blur-md border border-[rgba(43,35,32,0.12)] p-3.5 rounded-xl shadow-lg">
+            <div className="bg-[rgba(250,250,248,0.96)] border border-[rgba(43,35,32,0.12)] p-3.5 rounded-xl shadow-lg">
               <div className="flex items-center justify-between text-[9px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
                 <span>TEXTURE CORE</span>
                 <span>HAND-CUT</span>
@@ -185,7 +185,7 @@ export default function ExplodedSamosa() {
 
           {/* CALLOUT 4: Whole Spices (Bottom-Left) */}
           <div className="samosa-callout-4 absolute left-6 sm:left-24 bottom-[18%] max-w-xs pointer-events-auto opacity-0">
-            <div className="bg-[rgba(250,250,248,0.92)] backdrop-blur-md border border-[rgba(43,35,32,0.12)] p-3.5 rounded-xl shadow-lg">
+            <div className="bg-[rgba(250,250,248,0.96)] border border-[rgba(43,35,32,0.12)] p-3.5 rounded-xl shadow-lg">
               <div className="flex items-center justify-between text-[9px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
                 <span>PUNCH & BALANCE</span>
                 <span>RADHUNI</span>
@@ -199,7 +199,7 @@ export default function ExplodedSamosa() {
 
           {/* CALLOUT 5: Pastry Shards (Bottom-Right) */}
           <div className="samosa-callout-5 absolute right-6 sm:right-16 bottom-[14%] max-w-xs pointer-events-auto opacity-0">
-            <div className="bg-[rgba(250,250,248,0.92)] backdrop-blur-md border border-[rgba(43,35,32,0.12)] p-3.5 rounded-xl shadow-lg text-right">
+            <div className="bg-[rgba(250,250,248,0.96)] border border-[rgba(43,35,32,0.12)] p-3.5 rounded-xl shadow-lg text-right">
               <div className="flex items-center justify-between text-[9px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
                 <span>CRACKLE</span>
                 <span>GOLDEN SHELL</span>

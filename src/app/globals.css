@@ -32,7 +32,8 @@
 html {
   background-color: #FAFAF8;
   color: #2B2320;
-  scroll-behavior: auto; /* Lenis takes over */
+  scroll-behavior: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
@@ -45,6 +46,8 @@ body {
   cursor: default;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-overflow-scrolling: touch;
+  text-rendering: optimizeLegibility;
   selection-background-color: #2B2320;
   selection-color: #FAFAF8;
 }

@@ -132,7 +132,7 @@ export default function IngredientsConstellation() {
             />
 
             {/* Botanical Focal Badges */}
-            <div className="absolute top-4 left-4 p-3 bg-[rgba(250,250,248,0.9)] backdrop-blur-md rounded-xl border border-[rgba(43,35,32,0.1)] flex items-center gap-2.5 shadow-sm">
+            <div className="absolute top-4 left-4 p-3 bg-[rgba(250,250,248,0.96)] rounded-xl border border-[rgba(43,35,32,0.1)] flex items-center gap-2.5 shadow-sm">
               <Sparkles className="w-3.5 h-3.5 text-[#C86D3C]" />
               <span className="text-[10px] font-mono uppercase tracking-widest text-[#2B2320]">
                 Active Focus: {activeSpice.name}
