@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import VideoScrubber from "@/components/video/VideoScrubber";
-import { ArrowDown, Sparkles } from "lucide-react";
 
 interface HeroSectionProps {
   onOpenReservation: () => void;
@@ -15,7 +14,6 @@ export default function HeroSection({ onOpenReservation }: HeroSectionProps) {
   const stickyRef = useRef<HTMLDivElement>(null);
   const textGroupRef = useRef<HTMLDivElement>(null);
   const calloutsRef = useRef<HTMLDivElement>(null);
-  const videoWrapperRef = useRef<HTMLDivElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -26,10 +24,26 @@ export default function HeroSection({ onOpenReservation }: HeroSectionProps) {
     if (!container || !sticky) return;
 
     const ctx = gsap.context(() => {
-      // Scroll indicator fades out immediately on first scroll
+      // 1. Initial Hero Text Reveal
+      gsap.fromTo(
+        ".hero-char",
+        { opacity: 0, y: 40, rotateX: -30 },
+        {
+          opacity: 1,
+          y: 0,
+          rotateX: 0,
+          duration: 1.2,
+          stagger: 0.05,
+          ease: "power3.out",
+          delay: 0.2,
+        }
+      );
+
+      // 2. Scroll indicator fades out quickly on scroll
       if (scrollIndicatorRef.current) {
         gsap.to(scrollIndicatorRef.current, {
           opacity: 0,
+          y: 20,
           scrollTrigger: {
             trigger: container,
             start: "top top",
@@ -39,22 +53,22 @@ export default function HeroSection({ onOpenReservation }: HeroSectionProps) {
         });
       }
 
-      // Headline fades out and moves up smoothly as user scrolls
+      // 3. Headline fades out and moves up smoothly on scroll
       if (textGroupRef.current) {
         gsap.to(textGroupRef.current, {
-          y: -120,
+          y: -110,
           opacity: 0,
           ease: "power2.out",
           scrollTrigger: {
             trigger: container,
             start: "top top",
-            end: "top -45%",
+            end: "top -50%",
             scrub: 0.8,
           },
         });
       }
 
-      // Callouts smoothly fade in and float up as feast is revealed
+      // 4. Callouts smoothly fade in and float up
       if (calloutsRef.current) {
         gsap.fromTo(
           calloutsRef.current,
@@ -65,27 +79,9 @@ export default function HeroSection({ onOpenReservation }: HeroSectionProps) {
             ease: "power2.out",
             scrollTrigger: {
               trigger: container,
-              start: "top -20%",
-              end: "top -55%",
+              start: "top -15%",
+              end: "top -50%",
               scrub: 0.8,
-            },
-          }
-        );
-      }
-
-      // Video subtle cinematic dolly zoom on scroll (desktop only)
-      if (videoWrapperRef.current && window.innerWidth >= 768) {
-        gsap.fromTo(
-          videoWrapperRef.current,
-          { scale: 1 },
-          {
-            scale: 1.08,
-            ease: "none",
-            scrollTrigger: {
-              trigger: container,
-              start: "top top",
-              end: "bottom bottom",
-              scrub: 1.0,
             },
           }
         );
@@ -95,179 +91,150 @@ export default function HeroSection({ onOpenReservation }: HeroSectionProps) {
     return () => ctx.revert();
   }, []);
 
+  const heroBrand = "VAANAM";
+
   return (
     <section
       id="hero"
       ref={containerRef}
       className="relative w-full h-[140vh] md:h-[180vh] bg-[#FAFAF8]"
     >
-      {/* Pinned Viewport Container */}
+      {/* Pinned Full-Viewport Single Focal Canvas (100% Full-Bleed Edge-to-Edge) */}
       <div
         ref={stickyRef}
         className="sticky top-0 left-0 w-full h-screen overflow-hidden flex items-center justify-center"
       >
-        {/* Scrubbed Feast Video / Studio Visual (Pin-sharp, zero haze) */}
-        <div className="absolute inset-0 w-full h-full flex items-center justify-center">
-          <div
-            ref={videoWrapperRef}
-            className="w-full h-full max-w-[1920px] max-h-[1080px] relative will-change-transform"
-          >
+        {/* Full-width Cinematic Video Container: 100% Full Bleed Edge-to-Edge */}
+        <div className="absolute inset-0 w-full h-full overflow-hidden">
+          <div className="w-full h-full relative will-change-transform overflow-hidden">
             <VideoScrubber
-              videoSrc="/videos/Video-1 (2).mp4"
+              videoSrc="/assets/videos/hero-banquet.mp4"
               fallbackImage="/images/IMAGE 01 — HERO.jpg"
-              alt="The Taste of Chattogram — Contemporary Coastal Culinary Experience"
+              alt="The complete royal feast banquet of VAANAM laid with Chattogram hospitality in pure daylight"
               priority
-              zoomIntensity={0}
+              accentColor="#E38A2C"
+              label="THE GRAND CHATTOGRAM FEAST"
+              isActive={true}
+              pauseOnEnd={true}
             />
           </div>
         </div>
 
-        {/* Editorial culinary annotations (Desktop: 4 corner callouts; Mobile: clean horizontal swipe strip) */}
+
+        {/* Center Editorial Title */}
+        <div
+          ref={textGroupRef}
+          className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 sm:px-6 z-20 pointer-events-none"
+        >
+          {/* Saffron Kicker */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[rgba(250,250,248,0.96)] border border-[rgba(227,138,44,0.4)] shadow-md mb-4 sm:mb-6 pointer-events-auto">
+            <span className="w-2 h-2 rounded-full bg-[#E38A2C] animate-pulse" />
+            <span className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.25em] text-[#E38A2C] font-semibold">
+              COASTAL FEAST · MATIR KULHAD CHA · CHATTOGRAM
+            </span>
+          </div>
+
+          {/* Monumental Single Name: VAANAM with High-Legibility Contrast */}
+          <h1 className="font-fraunces text-7xl sm:text-9xl md:text-[9.5rem] lg:text-[11.5rem] font-light tracking-tight text-[#2B2320] leading-[0.88] drop-shadow-[0_2px_14px_rgba(250,250,248,0.95)] flex flex-wrap justify-center">
+            {heroBrand.split("").map((char, i) => (
+              <span
+                key={i}
+                className="hero-char inline-block will-change-transform"
+                style={{ whiteSpace: char === " " ? "pre" : "normal" }}
+              >
+                {char}
+              </span>
+            ))}
+          </h1>
+
+          {/* Frosted Glass Description Capsule */}
+          <div className="mt-4 sm:mt-5 max-w-lg bg-[rgba(250,250,248,0.95)] backdrop-blur-md px-6 py-3 rounded-2xl border border-[rgba(43,35,32,0.12)] shadow-xl">
+            <p className="text-xs sm:text-sm text-[#2B2320] font-inter font-normal tracking-wide leading-relaxed">
+              In Chattogram, rich celebratory feasts are consecrated with steaming clay cups of slow-brewed tea. One ancestral home for the feast and the adda.
+            </p>
+          </div>
+
+          <div className="mt-5 sm:mt-6 flex items-center gap-4 pointer-events-auto">
+            <button
+              type="button"
+              onClick={onOpenReservation}
+              className="px-7 py-3.5 rounded-full bg-[#C23B22] text-[#FAFAF8] text-xs font-semibold uppercase tracking-widest hover:bg-[#2B2320] transition-all duration-300 shadow-md cursor-pointer"
+            >
+              Reserve Table
+            </button>
+            <a
+              href="#beverages"
+              className="px-7 py-3.5 rounded-full bg-[rgba(250,250,248,0.94)] text-[#2B2320] text-xs font-semibold uppercase tracking-widest border border-[rgba(43,35,32,0.18)] hover:border-[#6B3F1D] transition-all duration-300 shadow-sm"
+            >
+              Explore Menu ↓
+            </a>
+          </div>
+        </div>
+
+        {/* 4 Corner Annotations */}
         <div
           ref={calloutsRef}
           className="absolute inset-0 pointer-events-none z-20 opacity-0 transition-opacity duration-300"
         >
           {/* Desktop 4 Corner Annotations */}
-          <div className="hidden md:flex absolute inset-0 max-w-7xl mx-auto p-8 sm:p-12 flex-col justify-between pointer-events-none">
-            {/* Top Left Annotation */}
+          <div className="hidden lg:flex absolute inset-0 max-w-7xl mx-auto p-8 sm:p-12 flex-col justify-between pointer-events-none">
+            {/* Top Left */}
             <div className="self-start mt-20 bg-[rgba(250,250,248,0.95)] border border-[rgba(43,35,32,0.12)] rounded-2xl p-3.5 shadow-xl text-left max-w-xs pointer-events-auto">
-              <div className="flex items-center justify-between text-[10px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
-                <span>ITEM 01 • MEZBANI GOSHT</span>
-                <span>SLOW-SIMMERED</span>
+              <div className="flex items-center justify-between text-[10px] font-mono text-[#E38A2C] uppercase tracking-wider mb-1 font-semibold">
+                <span>01 • MEZBANI GOSHT</span>
+                <span>HEAVY FEAST</span>
               </div>
               <p className="text-xs text-[#2B2320] font-medium leading-snug">
-                Tender beef simmered in mustard oil, roasted spices, and ground radhuni.
+                Prime beef slow-braised in wood-pressed mustard oil with roasted radhuni.
               </p>
             </div>
 
-            {/* Top Right Annotation */}
-            <div className="self-end mt-24 bg-[rgba(250,250,248,0.95)] border border-[rgba(43,35,32,0.12)] rounded-2xl p-3.5 shadow-xl text-right max-w-xs pointer-events-auto">
-              <div className="flex items-center justify-between text-[10px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
-                <span>CHINIGURA GRAIN</span>
-                <span>ITEM 02 • POLAO</span>
+            {/* Top Right */}
+            <div className="self-end mt-20 bg-[rgba(250,250,248,0.95)] border border-[rgba(43,35,32,0.12)] rounded-2xl p-3.5 shadow-xl text-right max-w-xs pointer-events-auto">
+              <div className="flex items-center justify-between text-[10px] font-mono text-[#6B3F1D] uppercase tracking-wider mb-1 font-semibold">
+                <span>MATIR KULHAD</span>
+                <span>02 • SHONDHANI CHA</span>
               </div>
               <p className="text-xs text-[#2B2320] font-medium leading-snug">
-                Short-grain aromatic rice perfumed with bay leaf, ghee, and whole cardamom.
+                Steaming orthodox Sylhet tea brewed in porous clay cups with bruised cardamom.
               </p>
             </div>
 
-            {/* Bottom Left Annotation */}
+            {/* Bottom Left */}
             <div className="self-start mb-20 bg-[rgba(250,250,248,0.95)] border border-[rgba(43,35,32,0.12)] rounded-2xl p-3.5 shadow-xl text-left max-w-xs pointer-events-auto">
-              <div className="flex items-center justify-between text-[10px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
-                <span>ITEM 03 • SHORSHE ILISH</span>
-                <span>BAY HARVEST</span>
+              <div className="flex items-center justify-between text-[10px] font-mono text-[#E38A2C] uppercase tracking-wider mb-1 font-semibold">
+                <span>03 • CHINIGURA POLAO</span>
+                <span>DESHI GHEE</span>
               </div>
               <p className="text-xs text-[#2B2320] font-medium leading-snug">
-                Hilsa steeped in pungent cold-pressed mustard paste and fresh green chillies.
+                Fragrant Bengal short grains perfumed with whole spices and ghee.
               </p>
             </div>
 
-            {/* Bottom Right Annotation */}
+            {/* Bottom Right */}
             <div className="self-end mb-20 bg-[rgba(250,250,248,0.95)] border border-[rgba(43,35,32,0.12)] rounded-2xl p-3.5 shadow-xl text-right max-w-xs pointer-events-auto">
-              <div className="flex items-center justify-between text-[10px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
-                <span>ROASTED CHILLI</span>
-                <span>ITEM 04 • ALOO BHORTA</span>
+              <div className="flex items-center justify-between text-[10px] font-mono text-[#8A5A2B] uppercase tracking-wider mb-1 font-semibold">
+                <span>SLOW-DRIPPED</span>
+                <span>04 • ROASTED COFFEE</span>
               </div>
               <p className="text-xs text-[#2B2320] font-medium leading-snug">
-                Stone-mashed local potatoes with toasted dry chillies and raw mustard oil.
+                Dark chicory roast slow-dripped into traditional brass carafes.
               </p>
             </div>
           </div>
-
-          {/* Mobile Non-Colliding Swipeable Cards Strip */}
-          <div className="md:hidden absolute bottom-12 left-0 right-0 px-4 pointer-events-auto">
-            <div className="flex items-stretch gap-2.5 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-none">
-              <div className="snap-center shrink-0 w-[78vw] max-w-[280px] bg-[rgba(250,250,248,0.96)] border border-[rgba(43,35,32,0.12)] rounded-xl p-3.5 shadow-xl">
-                <div className="flex items-center justify-between text-[9px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
-                  <span>01 • MEZBANI GOSHT</span>
-                  <span>SIMMERED</span>
-                </div>
-                <p className="text-xs text-[#2B2320] font-medium leading-snug">
-                  Tender beef simmered in mustard oil, roasted spices, and ground radhuni.
-                </p>
-              </div>
-
-              <div className="snap-center shrink-0 w-[78vw] max-w-[280px] bg-[rgba(250,250,248,0.96)] border border-[rgba(43,35,32,0.12)] rounded-xl p-3.5 shadow-xl">
-                <div className="flex items-center justify-between text-[9px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
-                  <span>02 • POLAO</span>
-                  <span>CHINIGURA</span>
-                </div>
-                <p className="text-xs text-[#2B2320] font-medium leading-snug">
-                  Short-grain aromatic rice perfumed with bay leaf, ghee, and whole cardamom.
-                </p>
-              </div>
-
-              <div className="snap-center shrink-0 w-[78vw] max-w-[280px] bg-[rgba(250,250,248,0.96)] border border-[rgba(43,35,32,0.12)] rounded-xl p-3.5 shadow-xl">
-                <div className="flex items-center justify-between text-[9px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
-                  <span>03 • SHORSHE ILISH</span>
-                  <span>BAY HARVEST</span>
-                </div>
-                <p className="text-xs text-[#2B2320] font-medium leading-snug">
-                  Hilsa steeped in pungent cold-pressed mustard paste and fresh green chillies.
-                </p>
-              </div>
-
-              <div className="snap-center shrink-0 w-[78vw] max-w-[280px] bg-[rgba(250,250,248,0.96)] border border-[rgba(43,35,32,0.12)] rounded-xl p-3.5 shadow-xl">
-                <div className="flex items-center justify-between text-[9px] font-mono text-[#C86D3C] uppercase tracking-wider mb-1">
-                  <span>04 • ALOO BHORTA</span>
-                  <span>ROASTED CHILLI</span>
-                </div>
-                <p className="text-xs text-[#2B2320] font-medium leading-snug">
-                  Stone-mashed local potatoes with toasted dry chillies and raw mustard oil.
-                </p>
-              </div>
-            </div>
-            <div className="text-center mt-1 text-[9px] font-mono text-[#61534E] uppercase tracking-widest">
-              ← Swipe Dishes →
-            </div>
-          </div>
         </div>
 
-        {/* Primary Editorial Headline & CTAs (Fades smoothly as user scrolls down) */}
-        <div
-          ref={textGroupRef}
-          className="relative z-10 text-center max-w-4xl mx-auto px-5 sm:px-6 pointer-events-auto transition-transform"
-        >
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[rgba(43,35,32,0.12)] bg-[#FAFAF8] mb-5 shadow-sm">
-            <Sparkles className="w-3.5 h-3.5 text-[#C86D3C]" />
-            <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.25em] text-[#61534E]">
-              01 — The Taste of Chattogram
-            </span>
-          </div>
-
-          <h1 className="font-fraunces text-4xl sm:text-7xl md:text-8xl lg:text-9xl font-light tracking-tight text-[#2B2320] leading-[0.98] mb-5">
-            The Taste of <br className="hidden sm:inline" />
-            <span className="italic font-normal">Chattogram.</span>
-          </h1>
-
-          <p className="text-xs sm:text-base md:text-lg text-[#61534E] max-w-2xl mx-auto font-inter font-light leading-relaxed mb-7">
-            A coastal table shaped by spice, fire and tradition. Explore the slow-curated culinary heritage of Bangladesh choreographed to your scroll.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4">
-            <button
-              type="button"
-              onClick={onOpenReservation}
-              className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-[#2B2320] text-[#FAFAF8] text-xs uppercase tracking-widest font-medium hover:bg-[#C86D3C] transition-all duration-300 shadow-lg cursor-pointer"
-            >
-              Reserve Table
-            </button>
-            <a
-              href="#story"
-              className="w-full sm:w-auto px-7 py-3.5 rounded-full border border-[rgba(43,35,32,0.2)] hover:border-[#2B2320] text-[#2B2320] text-xs uppercase tracking-widest font-medium transition-all duration-300 bg-[#FAFAF8] cursor-pointer shadow-sm"
-            >
-              Explore Menu Anatomy
-            </a>
-          </div>
-        </div>
-
-        {/* Scroll Indicator at Bottom */}
+        {/* Pulsing Scroll Indicator */}
         <div
           ref={scrollIndicatorRef}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 text-[#61534E] font-mono text-[10px] tracking-[0.25em] uppercase select-none opacity-80 animate-bounce"
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 pointer-events-none"
         >
-          <span>Scroll to Explore Feast</span>
-          <ArrowDown className="w-3.5 h-3.5" />
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[rgba(250,250,248,0.92)] backdrop-blur-md border border-[rgba(43,35,32,0.12)] shadow-md">
+            <span className="text-[9px] font-mono uppercase tracking-[0.25em] text-[#6B3F1D] font-semibold">
+              SCROLL TO EXPLORE
+            </span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E38A2C] animate-ping" />
+          </div>
         </div>
       </div>
     </section>

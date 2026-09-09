@@ -65,26 +65,28 @@ export default function SignatureSauces() {
     >
       <div
         ref={stickyRef}
-        className="md:sticky md:top-0 md:left-0 w-full min-h-screen md:h-screen md:overflow-hidden flex flex-col justify-center items-center py-16 px-4 sm:px-8 md:p-12"
+        className="md:sticky md:top-0 md:left-0 w-full h-screen overflow-hidden flex items-center justify-center"
       >
         {/* Section Title Header (Mobile: normal flow; Desktop: top-left absolute) */}
-        <div className="w-full max-w-7xl mx-auto px-2 mb-6 md:mb-0 md:absolute md:top-12 md:left-12 z-20 pointer-events-none">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#C86D3C]" />
-            <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#61534E]">
-              06 — KASUNDI & THE FERMENT
-            </span>
+        <div className="w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-12 mb-6 md:mb-0 md:absolute md:top-8 md:left-0 md:right-0 z-20 pointer-events-none flex justify-start">
+          <div className="max-w-md bg-[rgba(250,250,248,0.94)] backdrop-blur-md p-5 sm:p-6 rounded-2xl border border-[rgba(43,35,32,0.1)] shadow-xl pointer-events-auto">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C86D3C]" />
+              <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#C86D3C] font-semibold">
+                05 — KASUNDI & THE FERMENT
+              </span>
+            </div>
+            <h3 className="font-fraunces text-3xl sm:text-4xl lg:text-5xl font-light text-[#2B2320] tracking-tight">
+              Kasundi & Coastal Relishes.
+            </h3>
+            <p className="text-xs text-[#61534E] font-inter mt-2 leading-relaxed">
+              Three artisanal condiments rooted in stone-ground craft and slow fermentation.
+            </p>
           </div>
-          <h3 className="font-fraunces text-3xl sm:text-5xl font-light text-[#2B2320]">
-            Kasundi & Coastal Relishes.
-          </h3>
-          <p className="text-xs text-[#61534E] font-inter mt-1 max-w-sm">
-            Three artisanal condiments rooted in stone-ground craft and slow fermentation.
-          </p>
         </div>
 
-        {/* Video Frame */}
-        <div className="relative w-full max-w-[1920px] aspect-[16/10] md:h-full md:max-h-[1080px] rounded-2xl md:rounded-none overflow-hidden shadow-lg md:shadow-none">
+        {/* Video Frame: 100% Full-Screen Edge-to-Edge */}
+        <div className="absolute inset-0 w-full h-full overflow-hidden">
           <div className="w-full h-full relative">
             <VideoScrubber
               videoSrc="/videos/video-4 (2).mp4"

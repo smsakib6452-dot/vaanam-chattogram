@@ -1,15 +1,48 @@
 "use client";
 
-import React, { useState } from "react";
-import { ArrowRight, Sparkles, Award } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ArrowRight, Sparkles, Clock, MapPin, Phone } from "lucide-react";
+import VideoScrubber from "@/components/video/VideoScrubber";
 
 interface ReservationSectionProps {
   onOpenReservation: () => void;
 }
 
 export default function ReservationSection({ onOpenReservation }: ReservationSectionProps) {
+  const containerRef = useRef<HTMLElement>(null);
+  const videoParallaxRef = useRef<HTMLDivElement>(null);
   const [quickDate, setQuickDate] = useState<string>("2026-09-18");
   const [quickGuests, setQuickGuests] = useState<number>(2);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    const container = containerRef.current;
+    if (!container) return;
+
+    const ctx = gsap.context(() => {
+      if (videoParallaxRef.current && window.innerWidth >= 768) {
+        gsap.fromTo(
+          videoParallaxRef.current,
+          { y: -30, scale: 1.05 },
+          {
+            y: 30,
+            scale: 0.98,
+            ease: "none",
+            scrollTrigger: {
+              trigger: container,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 1,
+            },
+          }
+        );
+      }
+    }, container);
+
+    return () => ctx.revert();
+  }, []);
 
   const handleQuickSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,129 +52,136 @@ export default function ReservationSection({ onOpenReservation }: ReservationSec
   return (
     <footer
       id="reservation"
-      className="relative w-full bg-[#FAFAF8] pt-32 pb-20 px-6 sm:px-12 lg:px-20 border-t border-[rgba(43,35,32,0.08)]"
+      ref={containerRef}
+      className="relative w-full bg-[#FAFAF8] pt-24 pb-16 px-6 sm:px-12 lg:px-20 border-t border-[rgba(43,35,32,0.08)] overflow-hidden"
     >
-      <div className="max-w-5xl mx-auto text-center">
-        {/* Editorial Section Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[rgba(43,35,32,0.1)] bg-[#FAF8F5] mb-8">
-          <Sparkles className="w-3.5 h-3.5 text-[#C86D3C]" />
-          <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.25em] text-[#61534E]">
-            08 — Reserve Your Table • Contemporary Coastal Dining
-          </span>
-        </div>
-
-        {/* Large Typography with Generous Whitespace */}
-        <h2 className="font-fraunces text-5xl sm:text-7xl lg:text-8xl font-light text-[#2B2320] tracking-tight leading-[0.98] mb-8">
-          Your Table by the <br />
-          <span className="italic font-normal">Bay of Bengal.</span>
-        </h2>
-
-        <p className="text-sm sm:text-base text-[#61534E] font-inter font-light max-w-xl mx-auto leading-relaxed mb-14">
-          Reservations open thirty days in advance. A seated exploration of Chattogram's coastal culinary memory, slow-braised feasts, and fragrant river deltas.
-        </p>
-
-        {/* Minimal Quick Booking Form */}
-        <form
-          onSubmit={handleQuickSubmit}
-          className="max-w-2xl mx-auto bg-[#FAF8F5] border border-[rgba(43,35,32,0.12)] p-3 sm:p-4 rounded-full shadow-lg flex flex-col sm:flex-row items-center gap-3 sm:gap-4 mb-20"
-        >
-          {/* Guests */}
-          <div className="w-full sm:w-1/3 px-4 py-2 border-b sm:border-b-0 sm:border-r border-[rgba(43,35,32,0.1)] text-left">
-            <label className="text-[9px] font-mono uppercase tracking-widest text-[#96867F] block">
-              Party
-            </label>
-            <select
-              value={quickGuests}
-              onChange={(e) => setQuickGuests(Number(e.target.value))}
-              className="w-full bg-transparent text-xs font-medium text-[#2B2320] focus:outline-none cursor-pointer"
-            >
-              {[1, 2, 3, 4, 5, 6, 8].map((n) => (
-                <option key={n} value={n}>
-                  {n} {n === 1 ? "Guest" : "Guests"}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Date */}
-          <div className="w-full sm:w-1/3 px-4 py-2 border-b sm:border-b-0 sm:border-r border-[rgba(43,35,32,0.1)] text-left">
-            <label className="text-[9px] font-mono uppercase tracking-widest text-[#96867F] block">
-              Seating Date
-            </label>
-            <input
-              type="date"
-              value={quickDate}
-              onChange={(e) => setQuickDate(e.target.value)}
-              className="w-full bg-transparent text-xs font-medium text-[#2B2320] focus:outline-none cursor-pointer"
+      <div className="max-w-6xl mx-auto">
+        {/* Cinematic Parallax Background Spread Banner */}
+        <div className="relative aspect-[21/9] sm:aspect-[24/9] w-full rounded-3xl overflow-hidden shadow-2xl bg-[#F5F2EA] border border-[rgba(43,35,32,0.08)] mb-16">
+          <div ref={videoParallaxRef} className="w-full h-full relative will-change-transform">
+            <VideoScrubber
+              videoSrc="/assets/videos/finale-table-spread.mp4"
+              fallbackImage="/assets/photos/img-poster.jpg"
+              alt="Grand assembled dining spread and steaming chai in Chattogram daylight"
+              accentColor="#C23B22"
+              label="FINALE TABLE SPREAD"
             />
           </div>
-
-          {/* Submit */}
-          <div className="w-full sm:w-auto p-1">
-            <button
-              type="submit"
-              className="w-full sm:w-auto px-7 py-3 rounded-full bg-[#2B2320] text-[#FAFAF8] text-xs font-medium uppercase tracking-widest hover:bg-[#C86D3C] transition-all duration-300 flex items-center justify-center gap-2 group cursor-pointer shadow-md"
-            >
-              <span>Book Table</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-            </button>
-          </div>
-        </form>
-
-        {/* Editorial Colophon & Locations */}
-        <div className="pt-16 border-t border-[rgba(43,35,32,0.08)] grid grid-cols-1 md:grid-cols-4 gap-8 text-left text-xs font-inter">
-          <div>
-            <span className="font-fraunces text-xl text-[#2B2320] font-light block mb-2">
-              VAANAM
-            </span>
-            <p className="text-[11px] text-[#61534E] leading-relaxed">
-              Contemporary Coastal Dining & Chattogram Culinary Heritage.
-            </p>
-          </div>
-
-          <div>
-            <span className="text-[10px] font-mono uppercase tracking-widest text-[#96867F] block mb-2">
-              Location
-            </span>
-            <p className="text-[#2B2320] leading-snug">
-              Chattogram, Bangladesh
-              <br />
-              Coastal Table
-            </p>
-            <p className="text-[#96867F] text-[11px] mt-1 font-mono">reservations@vaanam-chattogram.com</p>
-          </div>
-
-          <div>
-            <span className="text-[10px] font-mono uppercase tracking-widest text-[#96867F] block mb-2">
-              Service Hours
-            </span>
-            <p className="text-[#2B2320] leading-snug">
-              Tuesday – Sunday
-              <br />
-              Lunch: 12:30 – 15:30
-              <br />
-              Dinner: 19:00 – 22:30
-            </p>
-            <p className="text-[#96867F] text-[11px] mt-1 font-mono">Mondays Closed</p>
-          </div>
-
-          <div>
-            <span className="text-[10px] font-mono uppercase tracking-widest text-[#96867F] block mb-2">
-              Curated Menus
-            </span>
-            <p className="text-[#2B2320] leading-snug">
-              The Mezbani Table
-              <br />
-              The Coastal Harvest
-            </p>
-            <p className="text-[#96867F] text-[11px] mt-1 font-mono">Dietary preferences catered</p>
-          </div>
         </div>
 
-        {/* Legal & Credits */}
-        <div className="mt-16 pt-8 border-t border-[rgba(43,35,32,0.06)] flex flex-col sm:flex-row items-center justify-between text-[10px] font-mono text-[#96867F]">
-          <span>© MMXXVI VAANAM. CHATTOGRAM, BANGLADESH. ALL RIGHTS RESERVED.</span>
-          <span className="mt-2 sm:mt-0">CURATED CULINARY EDITORIAL EXPERIENCE</span>
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Editorial Section Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[rgba(194,59,34,0.25)] bg-[rgba(250,250,248,0.9)] mb-6">
+            <Sparkles className="w-3.5 h-3.5 text-[#C23B22]" />
+            <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.25em] text-[#C23B22] font-semibold">
+              08 — THE FINALE · FEAST & CHAI EXPERIENCE
+            </span>
+          </div>
+
+          {/* Large Editorial Headline */}
+          <h2 className="font-fraunces text-4xl sm:text-6xl lg:text-7xl font-light text-[#2B2320] tracking-tight leading-[1.05] mb-6">
+            Where Heavy Feasts Meet <br />
+            <span className="text-[#6B3F1D] italic">The Meditative Cha.</span>
+          </h2>
+
+          <p className="text-sm sm:text-base text-[#61534E] font-inter font-light max-w-xl mx-auto leading-relaxed mb-10">
+            In Chattogram, meals are not rushed. Savor our slow-cooked coastal meats, fragrant Chinigura rice, and finish with a warm clay cup of spiced tea and slow-dripped coffee.
+          </p>
+
+          {/* Large Chili Red Button with Magnetic Fill Effect */}
+          <div className="mb-14">
+            <button
+              type="button"
+              onClick={onOpenReservation}
+              className="relative inline-flex items-center justify-center px-10 py-5 rounded-full bg-[#C23B22] text-[#FAFAF8] text-sm sm:text-base font-semibold uppercase tracking-widest shadow-xl hover:bg-[#6B3F1D] hover:scale-105 transition-all duration-300 cursor-pointer group"
+            >
+              <span>RESERVE YOUR TABLE</span>
+              <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1.5 transition-transform" />
+            </button>
+          </div>
+
+          {/* Minimal Quick Booking Bar */}
+          <form
+            onSubmit={handleQuickSubmit}
+            className="max-w-2xl mx-auto bg-[#FAF8F5] border border-[rgba(43,35,32,0.12)] p-2.5 sm:p-3 rounded-full shadow-lg flex flex-col sm:flex-row items-center gap-2 sm:gap-3 mb-16"
+          >
+            <div className="w-full sm:w-1/2 px-4 py-2 border-b sm:border-b-0 sm:border-r border-[rgba(43,35,32,0.1)] text-left">
+              <label className="text-[9px] font-mono uppercase tracking-widest text-[#96867F] block">
+                Party Size
+              </label>
+              <select
+                value={quickGuests}
+                onChange={(e) => setQuickGuests(Number(e.target.value))}
+                className="w-full bg-transparent text-xs font-medium text-[#2B2320] focus:outline-none cursor-pointer"
+              >
+                {[1, 2, 3, 4, 5, 6, 8, 10, 12].map((n) => (
+                  <option key={n} value={n}>
+                    {n} {n === 1 ? "Guest" : "Guests"} (Feast & Chai)
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="w-full sm:w-1/2 px-4 py-2 text-left">
+              <label className="text-[9px] font-mono uppercase tracking-widest text-[#96867F] block">
+                Preferred Seating
+              </label>
+              <input
+                type="date"
+                value={quickDate}
+                onChange={(e) => setQuickDate(e.target.value)}
+                className="w-full bg-transparent text-xs font-medium text-[#2B2320] focus:outline-none cursor-pointer"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-[#2B2320] text-[#FAFAF8] text-xs font-medium uppercase tracking-wider hover:bg-[#C23B22] transition-colors cursor-pointer"
+            >
+              Check Availability
+            </button>
+          </form>
+
+          {/* Editorial Colophon & Brand Details */}
+          <div className="pt-12 border-t border-[rgba(43,35,32,0.08)] grid grid-cols-1 md:grid-cols-3 gap-8 text-left text-xs font-inter">
+            <div>
+              <span className="font-fraunces text-2xl text-[#6B3F1D] font-light block mb-2">
+                VAANAM
+              </span>
+              <p className="text-[11px] text-[#61534E] leading-relaxed">
+                Coastal Culinary Atelier & Artisanal Cha Studio.
+                Rooted in the century-old hospitality of Chattogram, Bangladesh.
+              </p>
+            </div>
+
+            <div className="space-y-1 text-[11px] text-[#61534E]">
+              <div className="flex items-center gap-2 text-[#2B2320] font-medium font-mono">
+                <MapPin className="w-3.5 h-3.5 text-[#C23B22]" />
+                <span>GEC Circle & Batali Hill Trail, Chattogram</span>
+              </div>
+              <p>Private Dining, Adda Courtyard & Tea Studio</p>
+              <p className="pt-1 font-mono text-[10px] text-[#96867F]">
+                Open Daily: 11:30 AM – 11:00 PM BST
+              </p>
+            </div>
+
+            <div className="space-y-1 text-[11px] text-[#61534E]">
+              <div className="flex items-center gap-2 text-[#2B2320] font-medium font-mono">
+                <Phone className="w-3.5 h-3.5 text-[#C23B22]" />
+                <span>+880 1819-VAANAM (822626)</span>
+              </div>
+              <p>concierge@vaanam-chattogram.com</p>
+              <p className="pt-1 font-mono text-[10px] text-[#96867F]">
+                Table reservations & Tea Salon inquiries
+              </p>
+            </div>
+          </div>
+
+          {/* Minimal Bottom Line */}
+          <div className="mt-12 pt-6 border-t border-[rgba(43,35,32,0.06)] flex flex-col sm:flex-row items-center justify-between text-[10px] font-mono tracking-widest text-[#96867F] uppercase">
+            <span>VAANAM • CHATTOGRAM | COASTAL FEASTS & ARTISANAL CHA</span>
+            <span>DESIGNED FOR 60 FPS REEL CAPTURE</span>
+          </div>
         </div>
       </div>
     </footer>

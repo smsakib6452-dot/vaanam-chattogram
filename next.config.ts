@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     unoptimized: isGitHubActions ? true : false,
-    qualities: [75, 80, 85],
+    qualities: [75, 80, 82, 85, 90],
   },
   env: {
     NEXT_PUBLIC_BASE_PATH: isGitHubActions ? `/${repoName}` : "",

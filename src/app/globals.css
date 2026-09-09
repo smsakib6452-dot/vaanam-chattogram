@@ -5,9 +5,13 @@
   --color-charcoal: #2B2320;
   --color-charcoal-muted: #61534E;
   --color-charcoal-subtle: #96867F;
-  --color-saffron: #C86D3C;
-  --color-terracotta: #A84A28;
-  --color-brass: #B38F5C;
+  --color-chai-brown: #6B3F1D;
+  --color-roasted-tan: #8A5A2B;
+  --color-saffron-orange: #E38A2C;
+  --color-chili-red: #C23B22;
+  --color-turmeric-gold: #D9A441;
+  --color-matcha-green: #5C8A3A;
+  --color-mango-orange: #F2994A;
   --color-cream: #F4F1EA;
   --color-paper: #FAF8F5;
   --color-border-subtle: rgba(43, 35, 32, 0.08);
@@ -19,9 +23,13 @@
 :root {
   --canvas: #FAFAF8;
   --charcoal: #2B2320;
-  --saffron: #C86D3C;
-  --terracotta: #A84A28;
-  --brass: #B38F5C;
+  --chai-brown: #6B3F1D;
+  --roasted-tan: #8A5A2B;
+  --saffron-orange: #E38A2C;
+  --chili-red: #C23B22;
+  --turmeric-gold: #D9A441;
+  --matcha-green: #5C8A3A;
+  --mango-orange: #F2994A;
   --border-subtle: rgba(43, 35, 32, 0.08);
 }
 
@@ -57,6 +65,18 @@ body {
   color: #FAFAF8;
 }
 
+/* Subtle 2-3% grain noise overlay across canvas */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
 /* Editorial typography utilities */
 .font-fraunces {
   font-family: var(--font-fraunces), Georgia, serif;
@@ -65,8 +85,6 @@ body {
 .font-inter {
   font-family: var(--font-inter), system-ui, sans-serif;
 }
-
-
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
@@ -111,12 +129,12 @@ body {
   transform-origin: bottom left;
 }
 
-/* Editorial line clamp & hairline dividers */
+/* Editorial hairline dividers */
 .hairline-border {
   border-color: rgba(43, 35, 32, 0.08);
 }
 
-/* Mask reveal utility */
+/* Clip reveal utilities */
 .clip-reveal-enter {
   clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
   transition: clip-path 1.2s cubic-bezier(0.16, 1, 0.3, 1);
