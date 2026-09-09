@@ -14,45 +14,29 @@ export default function EditorialPreloader({ onComplete }: EditorialPreloaderPro
   const [isDismissed, setIsDismissed] = useState<boolean>(false);
 
   useEffect(() => {
-    // Pre-buffer hero feast video in the background during preloader
-    const heroSrc = assetPath("/videos/Video-1 (2).mp4");
-    const video = document.createElement("video");
-    video.src = heroSrc;
-    video.preload = "auto";
-    video.muted = true;
-    video.playsInline = true;
+    // Preload the lightweight optimized hero image instead of choking bandwidth with 4MB video
+    const heroImg = new window.Image();
+    heroImg.src = assetPath("/images/IMAGE 01 — HERO.jpg");
 
-    let isVideoBuffered = false;
-    const onBuffer = () => {
-      if (video.readyState >= 3) {
-        isVideoBuffered = true;
-      }
+    let isImgLoaded = false;
+    heroImg.onload = () => {
+      isImgLoaded = true;
     };
-    video.addEventListener("canplaythrough", onBuffer);
-    video.addEventListener("canplay", onBuffer);
-    video.addEventListener("loadeddata", onBuffer);
-    video.load();
+    if (heroImg.complete) {
+      isImgLoaded = true;
+    }
 
     const startTime = Date.now();
-    const minDuration = 1800; // 1.8s minimum smooth presentation
-    const maxDuration = 3200; // 3.2s maximum timeout to never hang on slow networks
+    const targetDuration = 800; // 0.8s swift, elegant editorial intro
 
     const updateProgress = () => {
       const elapsed = Date.now() - startTime;
-
-      // If video is buffered or elapsed > minDuration, finish gracefully
-      let targetProgress = Math.min(elapsed / minDuration, 1);
-      if (!isVideoBuffered && elapsed < maxDuration) {
-        targetProgress = Math.min(targetProgress, 0.88);
-      } else if (isVideoBuffered) {
-        targetProgress = Math.min(elapsed / (minDuration * 0.95), 1);
-      }
-
-      const eased = 1 - Math.pow(1 - targetProgress, 3);
+      const linear = Math.min(elapsed / targetDuration, 1);
+      const eased = 1 - Math.pow(1 - linear, 3);
       const currentVal = Math.floor(eased * 100);
       setProgress(currentVal);
 
-      if (targetProgress < 1 && elapsed < maxDuration) {
+      if (linear < 1) {
         requestAnimationFrame(updateProgress);
       } else {
         setProgress(100);
@@ -61,18 +45,14 @@ export default function EditorialPreloader({ onComplete }: EditorialPreloaderPro
           setTimeout(() => {
             setIsDismissed(true);
             onComplete();
-          }, 850);
-        }, 250);
+          }, 350);
+        }, 120);
       }
     };
 
     const frameId = requestAnimationFrame(updateProgress);
     return () => {
       cancelAnimationFrame(frameId);
-      video.removeEventListener("canplaythrough", onBuffer);
-      video.removeEventListener("canplay", onBuffer);
-      video.removeEventListener("loadeddata", onBuffer);
-      video.src = "";
     };
   }, [onComplete]);
 

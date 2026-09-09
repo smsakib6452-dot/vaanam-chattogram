@@ -7,8 +7,9 @@ const nextConfig: NextConfig = {
   output: isGitHubActions ? "export" : undefined,
   basePath: isGitHubActions ? `/${repoName}` : undefined,
   images: {
+    formats: ["image/avif", "image/webp"],
     unoptimized: isGitHubActions ? true : false,
-    qualities: [75, 90, 95],
+    qualities: [75, 80, 85],
   },
   env: {
     NEXT_PUBLIC_BASE_PATH: isGitHubActions ? `/${repoName}` : "",

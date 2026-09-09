@@ -176,10 +176,10 @@ export default function VideoScrubber({
           playsInline
           muted
           loop
-          preload={priority || shouldPreload ? "auto" : "none"}
+          preload={priority ? "metadata" : shouldPreload ? "auto" : "none"}
           disablePictureInPicture
           disableRemotePlayback
-          className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500 ease-out ${
+          className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-700 ease-out ${
             videoLoaded ? "opacity-100" : "opacity-0"
           }`}
           style={{
@@ -191,7 +191,7 @@ export default function VideoScrubber({
 
       {/* 2. Fallback Base Image while video buffers */}
       <div
-        className={`absolute inset-0 w-full h-full transition-opacity duration-500 ease-out ${
+        className={`absolute inset-0 w-full h-full transition-opacity duration-700 ease-out ${
           videoLoaded ? "opacity-0 pointer-events-none" : "opacity-100"
         }`}
         style={{
@@ -205,7 +205,7 @@ export default function VideoScrubber({
           priority={priority}
           sizes="(max-width: 768px) 100vw, (max-width: 1400px) 90vw, 1920px"
           className="object-cover object-center"
-          quality={90}
+          quality={80}
         />
       </div>
 

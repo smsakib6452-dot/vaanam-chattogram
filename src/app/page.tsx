@@ -81,7 +81,7 @@ export default function Home() {
       <EditorialNav onOpenReservation={() => setIsReservationOpen(true)} />
 
       {/* 5. Orchestrated Editorial Flow */}
-      <div className={`transition-opacity duration-1000 ${isPreloaded ? "opacity-100" : "opacity-0"}`}>
+      <div className={`transition-opacity duration-500 ${isPreloaded ? "opacity-100" : "opacity-0"}`}>
         {/* SECTION 1: Hero (01 — The Taste of Chattogram Video Scrub) */}
         <HeroSection onOpenReservation={() => setIsReservationOpen(true)} />
 
