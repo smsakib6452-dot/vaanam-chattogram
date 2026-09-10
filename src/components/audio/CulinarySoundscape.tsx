@@ -7,170 +7,166 @@ export default function CulinarySoundscape() {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const masterGainRef = useRef<GainNode | null>(null);
-  const ambientNodesRef = useRef<{
+  const activeNodesRef = useRef<{
     noiseSource?: AudioBufferSourceNode;
-    oscillators?: OscillatorNode[];
+    brownNoiseSource?: AudioBufferSourceNode;
+    oscillators: OscillatorNode[];
     lfo?: OscillatorNode;
-    interval?: NodeJS.Timeout;
-  }>({});
+  }>({
+    oscillators: [],
+  });
 
-  // 1. Instant Pleasant Bell / Singing Bowl Chime
-  const playChime = (ctx: AudioContext, baseFreq: number = 528, isExit: boolean = false) => {
+  // Soft, warm organic entrance bell (gentle 216Hz singing bowl with long exponential decay)
+  const playWarmSingingBowl = (ctx: AudioContext) => {
     try {
       const now = ctx.currentTime;
-      const osc1 = ctx.createOscillator();
-      const osc2 = ctx.createOscillator();
+      const osc = ctx.createOscillator();
+      const overtone = ctx.createOscillator();
       const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
 
-      osc1.type = "sine";
-      osc2.type = "sine";
+      // Warm 216 Hz (Deep meditative tone, no harsh highs)
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(216, now);
 
-      if (isExit) {
-        // Soft descending exit tone
-        osc1.frequency.setValueAtTime(baseFreq, now);
-        osc1.frequency.exponentialRampToValueAtTime(baseFreq * 0.75, now + 0.6);
-        osc2.frequency.setValueAtTime(baseFreq * 1.5, now);
-        osc2.frequency.exponentialRampToValueAtTime(baseFreq * 1.1, now + 0.6);
+      overtone.type = "sine";
+      overtone.frequency.setValueAtTime(432, now);
 
-        gain.gain.setValueAtTime(0.18, now);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(450, now);
 
-        osc1.connect(gain);
-        osc2.connect(gain);
-        gain.connect(ctx.destination);
+      // Very soft gain with long gentle decay over 2.5s
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.5);
 
-        osc1.start(now);
-        osc2.start(now);
-        osc1.stop(now + 0.65);
-        osc2.stop(now + 0.65);
-      } else {
-        // Clear, resonant solfeggio entrance chime (528 Hz - Solfeggio clarity)
-        osc1.frequency.setValueAtTime(baseFreq, now);
-        osc2.frequency.setValueAtTime(baseFreq * 2, now); // Octave harmonic
+      osc.connect(filter);
+      overtone.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
 
-        gain.gain.setValueAtTime(0.24, now);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
-
-        osc1.connect(gain);
-        osc2.connect(gain);
-        gain.connect(ctx.destination);
-
-        osc1.start(now);
-        osc2.start(now);
-        osc1.stop(now + 1.25);
-        osc2.stop(now + 1.25);
-      }
-    } catch (e) {
-      console.warn("Chime playback error:", e);
+      osc.start(now);
+      overtone.start(now);
+      osc.stop(now + 2.6);
+      overtone.stop(now + 2.6);
+    } catch {
+      // Safe skip
     }
   };
 
-  // 2. Start Continuous Culinary Ambient Soundscape
-  const startAmbientLoop = (ctx: AudioContext, masterGain: GainNode) => {
+  // Start Organic Coastal Soundscape: Deep Ocean Breeze + Warm Tea Simmer + Low Acoustic Pad
+  const startCoastalSoundscape = (ctx: AudioContext, masterGain: GainNode) => {
     const now = ctx.currentTime;
-    const cleanupNodes: {
-      noiseSource?: AudioBufferSourceNode;
-      oscillators: OscillatorNode[];
-      lfo?: OscillatorNode;
-      interval?: NodeJS.Timeout;
-    } = {
-      oscillators: [],
-    };
-
-    // A. Sizzling Tadka / Simmering Tea Kettle Texture (Filtered Pink/Bandpass Noise)
-    // Between 1000Hz and 3400Hz - highly audible on laptop/phone speakers
     const sampleRate = ctx.sampleRate;
-    const bufferSize = sampleRate * 3;
-    const noiseBuffer = ctx.createBuffer(1, bufferSize, sampleRate);
-    const output = noiseBuffer.getChannelData(0);
+    const bufferDuration = 5; // 5 seconds seamless loop
+    const bufferSize = sampleRate * bufferDuration;
+
+    // 1. Deep Brown Noise (1/f²): The peaceful, rhythmic breathing of the Bay of Bengal coast
+    const brownBuffer = ctx.createBuffer(1, bufferSize, sampleRate);
+    const brownData = brownBuffer.getChannelData(0);
+    let lastOut = 0.0;
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      brownData[i] = (lastOut + 0.025 * white) / 1.025;
+      lastOut = brownData[i];
+      brownData[i] *= 3.5; // Calibrate volume
+    }
+
+    const brownSource = ctx.createBufferSource();
+    brownSource.buffer = brownBuffer;
+    brownSource.loop = true;
+
+    // Dual-stage warm low-pass filter: cuts all harsh treble, leaves only deep gentle wave murmur
+    const brownFilter = ctx.createBiquadFilter();
+    brownFilter.type = "lowpass";
+    brownFilter.frequency.setValueAtTime(240, now);
+    brownFilter.Q.setValueAtTime(0.7, now);
+
+    // Slow LFO for gentle coastal swell (0.06Hz = 16-second breathing ocean wave)
+    const swellLfo = ctx.createOscillator();
+    swellLfo.frequency.setValueAtTime(0.06, now);
+
+    const swellGain = ctx.createGain();
+    swellGain.gain.setValueAtTime(0.04, now);
+
+    const brownGain = ctx.createGain();
+    brownGain.gain.setValueAtTime(0.12, now);
+
+    swellLfo.connect(swellGain);
+    swellGain.connect(brownGain.gain);
+    swellLfo.start(now);
+
+    brownSource.connect(brownFilter);
+    brownFilter.connect(brownGain);
+    brownGain.connect(masterGain);
+    brownSource.start(now);
+
+    // 2. Ultra-Soft Pink Noise: Gentle warm tea kettle simmer (velvety warmth, no high hissing)
+    const pinkBuffer = ctx.createBuffer(1, bufferSize, sampleRate);
+    const pinkData = pinkBuffer.getChannelData(0);
     let b0 = 0, b1 = 0, b2 = 0;
     for (let i = 0; i < bufferSize; i++) {
       const white = Math.random() * 2 - 1;
-      b0 = 0.99 * b0 + white * 0.06;
-      b1 = 0.96 * b1 + white * 0.08;
-      b2 = 0.86 * b2 + white * 0.12;
-      output[i] = (b0 + b1 + b2) * 0.18;
+      b0 = 0.99 * b0 + white * 0.05;
+      b1 = 0.95 * b1 + white * 0.07;
+      b2 = 0.85 * b2 + white * 0.1;
+      pinkData[i] = (b0 + b1 + b2) * 0.08;
     }
 
-    const noiseSource = ctx.createBufferSource();
-    noiseSource.buffer = noiseBuffer;
-    noiseSource.loop = true;
+    const pinkSource = ctx.createBufferSource();
+    pinkSource.buffer = pinkBuffer;
+    pinkSource.loop = true;
 
-    const noiseFilter = ctx.createBiquadFilter();
-    noiseFilter.type = "bandpass";
-    noiseFilter.frequency.setValueAtTime(1800, now);
-    noiseFilter.Q.setValueAtTime(1.4, now);
+    const pinkFilter = ctx.createBiquadFilter();
+    pinkFilter.type = "lowpass";
+    pinkFilter.frequency.setValueAtTime(380, now); // Warm cut at 380Hz
 
-    const noiseGain = ctx.createGain();
-    noiseGain.gain.setValueAtTime(0.22, now);
+    const pinkGain = ctx.createGain();
+    pinkGain.gain.setValueAtTime(0.08, now);
 
-    noiseSource.connect(noiseFilter);
-    noiseFilter.connect(noiseGain);
-    noiseGain.connect(masterGain);
-    noiseSource.start(now);
-    cleanupNodes.noiseSource = noiseSource;
+    pinkSource.connect(pinkFilter);
+    pinkFilter.connect(pinkGain);
+    pinkGain.connect(masterGain);
+    pinkSource.start(now);
 
-    // B. Warm Ambient Bengal Harmonium / Tanpura Drone (Acoustic resonance: 220Hz & 330Hz)
-    const frequencies = [220, 330, 440];
+    // 3. Low Meditative Acoustic Tanpura Pad (108Hz & 162Hz deep warm undertones)
     const droneGain = ctx.createGain();
-    droneGain.gain.setValueAtTime(0.12, now);
+    droneGain.gain.setValueAtTime(0.06, now);
 
     const droneFilter = ctx.createBiquadFilter();
     droneFilter.type = "lowpass";
-    droneFilter.frequency.setValueAtTime(850, now);
+    droneFilter.frequency.setValueAtTime(220, now);
     droneFilter.connect(droneGain);
     droneGain.connect(masterGain);
 
-    // Slow breathing LFO tremolo (0.18 Hz)
-    const lfo = ctx.createOscillator();
-    const lfoGain = ctx.createGain();
-    lfo.frequency.setValueAtTime(0.18, now);
-    lfoGain.gain.setValueAtTime(0.04, now);
-    lfo.connect(lfoGain);
-    lfoGain.connect(droneGain.gain);
-    lfo.start(now);
-    cleanupNodes.lfo = lfo;
+    const droneOscs: OscillatorNode[] = [];
+    const lowChord = [108, 162, 216]; // Deep warm natural harmonic series
 
-    frequencies.forEach((freq, idx) => {
+    lowChord.forEach((freq, idx) => {
       const osc = ctx.createOscillator();
       osc.type = "sine";
-      osc.frequency.setValueAtTime(freq + (idx === 1 ? 0.5 : 0), now); // Subtle natural beating
+      osc.frequency.setValueAtTime(freq + (idx === 1 ? 0.3 : 0), now); // Natural warm chorus
       osc.connect(droneFilter);
       osc.start(now);
-      cleanupNodes.oscillators.push(osc);
+      droneOscs.push(osc);
     });
 
-    // C. Micro Tadka Pops & Mustard Seed Crackles (Occasional gentle authentic clicks)
-    cleanupNodes.interval = setInterval(() => {
-      if (!audioCtxRef.current || audioCtxRef.current.state !== "running") return;
-      try {
-        const clickCtx = audioCtxRef.current;
-        const clickNow = clickCtx.currentTime;
-        const clickOsc = clickCtx.createOscillator();
-        const clickGain = clickCtx.createGain();
-
-        clickOsc.type = "triangle";
-        clickOsc.frequency.setValueAtTime(1200 + Math.random() * 1600, clickNow);
-
-        clickGain.gain.setValueAtTime(0.08, clickNow);
-        clickGain.gain.exponentialRampToValueAtTime(0.0001, clickNow + 0.04);
-
-        clickOsc.connect(clickGain);
-        clickGain.connect(masterGain);
-        clickOsc.start(clickNow);
-        clickOsc.stop(clickNow + 0.045);
-      } catch {
-        // Safe skip
-      }
-    }, 450);
-
-    ambientNodesRef.current = cleanupNodes;
+    activeNodesRef.current = {
+      brownNoiseSource: brownSource,
+      noiseSource: pinkSource,
+      oscillators: droneOscs,
+      lfo: swellLfo,
+    };
   };
 
-  // 3. Stop Continuous Ambient Soundscape
-  const stopAmbientLoop = () => {
-    const nodes = ambientNodesRef.current;
-    if (nodes.interval) clearInterval(nodes.interval);
+  // Stop Soundscape Smoothly
+  const stopCoastalSoundscape = () => {
+    const nodes = activeNodesRef.current;
+    if (nodes.brownNoiseSource) {
+      try {
+        nodes.brownNoiseSource.stop();
+        nodes.brownNoiseSource.disconnect();
+      } catch {}
+    }
     if (nodes.noiseSource) {
       try {
         nodes.noiseSource.stop();
@@ -191,13 +187,12 @@ export default function CulinarySoundscape() {
         nodes.lfo.disconnect();
       } catch {}
     }
-    ambientNodesRef.current = {};
+    activeNodesRef.current = { oscillators: [] };
   };
 
-  // 4. Toggle Sound Handler (Direct User Gesture)
+  // Toggle Soundscape on User Click
   const toggleSound = async () => {
     try {
-      // Synchronously instantiate AudioContext on user gesture
       if (!audioCtxRef.current) {
         const AudioContextClass =
           window.AudioContext ||
@@ -207,12 +202,10 @@ export default function CulinarySoundscape() {
 
       const ctx = audioCtxRef.current;
 
-      // Resume context if browser suspended it
       if (ctx.state === "suspended") {
         await ctx.resume();
       }
 
-      // Create master gain if missing
       if (!masterGainRef.current) {
         const masterGain = ctx.createGain();
         masterGain.gain.setValueAtTime(0.001, ctx.currentTime);
@@ -223,41 +216,39 @@ export default function CulinarySoundscape() {
       const gain = masterGainRef.current;
 
       if (isPlaying) {
-        // Turn OFF
-        playChime(ctx, 396, true);
+        // Fade out smoothly over 0.6s
         gain.gain.cancelScheduledValues(ctx.currentTime);
         gain.gain.setValueAtTime(gain.gain.value, ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.0001, ctx.currentTime + 0.45);
+        gain.gain.linearRampToValueAtTime(0.0001, ctx.currentTime + 0.6);
 
         setTimeout(() => {
-          stopAmbientLoop();
-        }, 500);
+          stopCoastalSoundscape();
+        }, 650);
 
         setIsPlaying(false);
       } else {
-        // Turn ON
-        // 1. Play immediate crystal-clear feedback chime so user instantly hears sound
-        playChime(ctx, 528, false);
+        // Soft singing bowl tone
+        playWarmSingingBowl(ctx);
 
-        // 2. Start rich ambient simmer & harmonic drone
-        stopAmbientLoop();
-        startAmbientLoop(ctx, gain);
+        // Start soothing organic coastal atmosphere
+        stopCoastalSoundscape();
+        startCoastalSoundscape(ctx, gain);
 
-        // 3. Smoothly ramp master gain to clear audible volume (0.35)
+        // Smoothly fade in master volume to a soothing, comfortable level (0.24)
         gain.gain.cancelScheduledValues(ctx.currentTime);
         gain.gain.setValueAtTime(0.001, ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.35, ctx.currentTime + 0.6);
+        gain.gain.linearRampToValueAtTime(0.24, ctx.currentTime + 1.2);
 
         setIsPlaying(true);
       }
     } catch (err) {
-      console.warn("Error toggling culinary soundscape:", err);
+      console.warn("Error toggling soundscape:", err);
     }
   };
 
   useEffect(() => {
     return () => {
-      stopAmbientLoop();
+      stopCoastalSoundscape();
       if (audioCtxRef.current) {
         try {
           audioCtxRef.current.close();
@@ -275,8 +266,8 @@ export default function CulinarySoundscape() {
           ? "border-[#E38A2C] bg-[rgba(250,250,248,0.98)] text-[#2B2320] ring-2 ring-[rgba(227,138,44,0.3)] shadow-[0_4px_14px_rgba(227,138,44,0.25)]"
           : "border-[rgba(43,35,32,0.14)] hover:border-[#2B2320] bg-[rgba(250,250,248,0.88)] backdrop-blur-md text-[#2B2320] hover:shadow-md"
       }`}
-      aria-label={isPlaying ? "Mute culinary soundscape" : "Enable culinary acoustic soundscape"}
-      title="Ambient Culinary Acoustic Soundscape (528Hz Solfeggio & Bengal Tadka Simmer)"
+      aria-label={isPlaying ? "Mute coastal soundscape" : "Enable calming coastal soundscape"}
+      title="Calming Coastal Ambience (Bay of Bengal Breeze & Warm Kettle Simmer)"
     >
       <span className="relative flex h-2 w-2">
         {isPlaying && (
@@ -302,3 +293,4 @@ export default function CulinarySoundscape() {
     </button>
   );
 }
+
