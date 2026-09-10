@@ -40,6 +40,54 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  name: "VAANAM Chattogram",
+  description:
+    "Coastal Feasts & Artisanal Cha Studio celebrating Chattogram's coastal culinary heritage, slow-cooked Mezbani feasts, and artisanal clay cup tea culture.",
+  image: "https://vaanam-chattogram.com/assets/photos/img-kulhad-hero.jpg",
+  servesCuisine: [
+    "Bengali",
+    "Chattogram Coastal",
+    "Mezbani Heritage",
+    "Artisanal Tea Atelier",
+    "Filter Coffee",
+  ],
+  priceRange: "$$",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "GEC Circle & Batali Hill Trail",
+    addressLocality: "Chattogram",
+    addressRegion: "Chattogram Division",
+    postalCode: "4000",
+    addressCountry: "BD",
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: 22.3569,
+    longitude: 91.8214,
+  },
+  telephone: "+8801819822626",
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ],
+      opens: "11:30",
+      closes: "23:00",
+    },
+  ],
+  acceptsReservations: "True",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -55,6 +103,10 @@ export default function RootLayout({
         suppressHydrationWarning
         className="min-h-screen bg-[#FAFAF8] text-[#2B2320] font-sans overflow-x-hidden relative"
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         {children}
       </body>
     </html>

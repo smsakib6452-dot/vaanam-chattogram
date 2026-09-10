@@ -6,7 +6,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import VideoScrubber from "@/components/video/VideoScrubber";
 import { resolveAsset } from "@/lib/assetResolver";
-import { Sparkles, Heart } from "lucide-react";
 
 const SWEETS = [
   {
@@ -77,7 +76,7 @@ export default function SweetsGallery() {
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[rgba(217,164,65,0.12)] border border-[rgba(217,164,65,0.3)] mb-4">
             <span className="w-2 h-2 rounded-full bg-[#D9A441]" />
             <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#D9A441] font-semibold">
-              05 — OUR SWEETS · BENGAL CONFECTIONERY
+              06 — OUR SWEETS · BENGAL CONFECTIONERY
             </span>
           </div>
 
@@ -91,7 +90,10 @@ export default function SweetsGallery() {
         </div>
 
         {/* Large Macro Confectionery Video Panel */}
-        <div className="relative aspect-[16/9] sm:aspect-[21/9] w-full rounded-3xl overflow-hidden shadow-2xl bg-[#F5F2EA] border border-[rgba(43,35,32,0.08)] mb-16">
+        <div
+          data-cursor="scrub"
+          className="relative aspect-[16/9] sm:aspect-[21/9] w-full rounded-3xl overflow-hidden shadow-2xl bg-[#F5F2EA] border border-[rgba(43,35,32,0.08)] mb-16"
+        >
           <VideoScrubber
             videoSrc="/assets/videos/sweets-macro.mp4"
             fallbackImage="/assets/photos/img-jalebi.jpg"
@@ -110,7 +112,8 @@ export default function SweetsGallery() {
             {SWEETS.map((sweet) => (
               <div
                 key={sweet.id}
-                className="w-full md:w-[420px] shrink-0 bg-[#FAF8F5] border border-[rgba(43,35,32,0.1)] rounded-3xl p-6 shadow-md hover:shadow-xl transition-all duration-300 group"
+                data-cursor="view"
+                className="w-full md:w-[420px] shrink-0 bg-[#FAF8F5] border border-[rgba(43,35,32,0.1)] rounded-3xl p-6 shadow-md hover:shadow-xl transition-all duration-300 group cursor-pointer"
               >
                 <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-5 bg-[#EDE8DF]">
                   <Image

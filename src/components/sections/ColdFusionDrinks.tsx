@@ -6,7 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import VideoScrubber from "@/components/video/VideoScrubber";
 import { resolveAsset } from "@/lib/assetResolver";
-import { Droplet, Sparkles, Snowflake } from "lucide-react";
+import { Snowflake } from "lucide-react";
 
 export default function ColdFusionDrinks() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -52,7 +52,7 @@ export default function ColdFusionDrinks() {
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F4F1EA] border border-[rgba(43,35,32,0.1)] mb-4">
             <Snowflake className="w-3.5 h-3.5 text-[#5C8A3A]" />
             <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#61534E] font-semibold">
-              06 — COLD & REFRESHING FUSIONS
+              07 — COLD & REFRESHING FUSIONS
             </span>
           </div>
           <h2 className="font-fraunces text-4xl sm:text-6xl font-light text-[#2B2320] tracking-tight">
@@ -64,7 +64,10 @@ export default function ColdFusionDrinks() {
         </div>
 
         {/* Center Split Cinemagraph / Video Panel */}
-        <div className="drink-reveal relative aspect-[16/9] max-w-5xl mx-auto rounded-3xl overflow-hidden shadow-2xl bg-[#F5F2EB] border border-[rgba(43,35,32,0.08)] mb-16">
+        <div
+          data-cursor="scrub"
+          className="drink-reveal relative aspect-[16/9] max-w-5xl mx-auto rounded-3xl overflow-hidden shadow-2xl bg-[#F5F2EB] border border-[rgba(43,35,32,0.08)] mb-16"
+        >
           <VideoScrubber
             videoSrc="/assets/videos/lassi-matcha-pour.mp4"
             fallbackImage="/assets/photos/img-mango-lassi.jpg"
@@ -77,7 +80,10 @@ export default function ColdFusionDrinks() {
         {/* Side-by-Side Split Cards: Mango Lassi & Matcha Chai */}
         <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
           {/* Card 1: Mango Lassi (Mango Orange #F2994A) */}
-          <div className="drink-reveal bg-[#FAF8F5] border border-[rgba(242,153,74,0.3)] rounded-3xl p-6 sm:p-8 shadow-md hover:shadow-xl transition-all duration-300 group">
+          <div
+            data-cursor="view"
+            className="drink-reveal bg-[#FAF8F5] border border-[rgba(242,153,74,0.3)] rounded-3xl p-6 sm:p-8 shadow-md hover:shadow-xl transition-all duration-300 group cursor-pointer"
+          >
             <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-6 bg-[#F9F5EC]">
               <Image
                 src={resolveAsset("/assets/photos/img-mango-lassi.jpg")}
@@ -116,7 +122,10 @@ export default function ColdFusionDrinks() {
           </div>
 
           {/* Card 2: Matcha Chai Fusion (Matcha Green #5C8A3A) */}
-          <div className="drink-reveal bg-[#FAF8F5] border border-[rgba(92,138,58,0.3)] rounded-3xl p-6 sm:p-8 shadow-md hover:shadow-xl transition-all duration-300 group">
+          <div
+            data-cursor="view"
+            className="drink-reveal bg-[#FAF8F5] border border-[rgba(92,138,58,0.3)] rounded-3xl p-6 sm:p-8 shadow-md hover:shadow-xl transition-all duration-300 group cursor-pointer"
+          >
             <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-6 bg-[#F3F7EC]">
               <Image
                 src={resolveAsset("/assets/photos/img-matcha-latte.jpg")}

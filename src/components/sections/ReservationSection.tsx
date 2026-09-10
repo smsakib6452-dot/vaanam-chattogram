@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowRight, Sparkles, Clock, MapPin, Phone } from "lucide-react";
+import { ArrowRight, Sparkles, MapPin, Phone } from "lucide-react";
 import VideoScrubber from "@/components/video/VideoScrubber";
 
 interface ReservationSectionProps {
@@ -57,7 +57,10 @@ export default function ReservationSection({ onOpenReservation }: ReservationSec
     >
       <div className="max-w-6xl mx-auto">
         {/* Cinematic Parallax Background Spread Banner */}
-        <div className="relative aspect-[21/9] sm:aspect-[24/9] w-full rounded-3xl overflow-hidden shadow-2xl bg-[#F5F2EA] border border-[rgba(43,35,32,0.08)] mb-16">
+        <div
+          data-cursor="scrub"
+          className="relative aspect-[21/9] sm:aspect-[24/9] w-full rounded-3xl overflow-hidden shadow-2xl bg-[#F5F2EA] border border-[rgba(43,35,32,0.08)] mb-16"
+        >
           <div ref={videoParallaxRef} className="w-full h-full relative will-change-transform">
             <VideoScrubber
               videoSrc="/assets/videos/finale-table-spread.mp4"
@@ -74,7 +77,7 @@ export default function ReservationSection({ onOpenReservation }: ReservationSec
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[rgba(194,59,34,0.25)] bg-[rgba(250,250,248,0.9)] mb-6">
             <Sparkles className="w-3.5 h-3.5 text-[#C23B22]" />
             <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.25em] text-[#C23B22] font-semibold">
-              08 — THE FINALE · FEAST & CHAI EXPERIENCE
+              09 — THE FINALE · FEAST & CHAI EXPERIENCE
             </span>
           </div>
 
@@ -88,15 +91,15 @@ export default function ReservationSection({ onOpenReservation }: ReservationSec
             In Chattogram, meals are not rushed. Savor our slow-cooked coastal meats, fragrant Chinigura rice, and finish with a warm clay cup of spiced tea and slow-dripped coffee.
           </p>
 
-          {/* Large Chili Red Button with Magnetic Fill Effect */}
+          {/* Large Luxury Clay Red Button */}
           <div className="mb-14">
             <button
               type="button"
               onClick={onOpenReservation}
-              className="relative inline-flex items-center justify-center px-10 py-5 rounded-full bg-[#C23B22] text-[#FAFAF8] text-sm sm:text-base font-semibold uppercase tracking-widest shadow-xl hover:bg-[#6B3F1D] hover:scale-105 transition-all duration-300 cursor-pointer group"
+              className="btn-luxury-primary px-12 py-5 text-sm sm:text-base font-semibold uppercase tracking-[0.25em] shadow-2xl group active:scale-98"
             >
               <span>RESERVE YOUR TABLE</span>
-              <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1.5 transition-transform" />
+              <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-2 transition-transform" />
             </button>
           </div>
 
@@ -136,9 +139,10 @@ export default function ReservationSection({ onOpenReservation }: ReservationSec
 
             <button
               type="submit"
-              className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-[#2B2320] text-[#FAFAF8] text-xs font-medium uppercase tracking-wider hover:bg-[#C23B22] transition-colors cursor-pointer"
+              className="btn-luxury-primary w-full sm:w-auto px-7 py-3 text-xs font-medium uppercase tracking-widest shadow-md group"
             >
-              Check Availability
+              <span>Check Availability</span>
+              <span className="ml-1.5 inline-block group-hover:translate-x-1 transition-transform font-mono">→</span>
             </button>
           </form>
 

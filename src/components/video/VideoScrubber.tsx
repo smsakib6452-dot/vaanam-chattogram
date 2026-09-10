@@ -45,7 +45,9 @@ export default function VideoScrubber({
   const [shouldPreload, setShouldPreload] = useState<boolean>(priority);
 
   const isInViewportRef = useRef<boolean>(false);
-  isInViewportRef.current = isInViewport;
+  useEffect(() => {
+    isInViewportRef.current = isInViewport;
+  }, [isInViewport]);
 
   const safePlay = useCallback(() => {
     const video = videoRef.current;

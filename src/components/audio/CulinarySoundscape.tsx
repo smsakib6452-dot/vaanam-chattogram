@@ -270,10 +270,10 @@ export default function CulinarySoundscape() {
     <button
       onClick={toggleSound}
       type="button"
-      className={`flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-300 text-[10px] sm:text-[11px] uppercase tracking-wider font-semibold select-none cursor-pointer group shadow-sm ${
+      className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border transition-all duration-300 text-[10px] sm:text-[11px] uppercase tracking-wider font-semibold select-none cursor-pointer group shadow-sm active:scale-95 ${
         isPlaying
-          ? "border-[#E38A2C] bg-[rgba(250,250,248,0.98)] text-[#2B2320] ring-2 ring-[rgba(227,138,44,0.25)]"
-          : "border-[rgba(43,35,32,0.14)] hover:border-[#2B2320] bg-[rgba(250,250,248,0.85)] backdrop-blur-sm text-[#2B2320]"
+          ? "border-[#E38A2C] bg-[rgba(250,250,248,0.98)] text-[#2B2320] ring-2 ring-[rgba(227,138,44,0.3)] shadow-[0_4px_14px_rgba(227,138,44,0.25)]"
+          : "border-[rgba(43,35,32,0.14)] hover:border-[#2B2320] bg-[rgba(250,250,248,0.88)] backdrop-blur-md text-[#2B2320] hover:shadow-md"
       }`}
       aria-label={isPlaying ? "Mute culinary soundscape" : "Enable culinary acoustic soundscape"}
       title="Ambient Culinary Acoustic Soundscape (528Hz Solfeggio & Bengal Tadka Simmer)"

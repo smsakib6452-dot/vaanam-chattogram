@@ -118,7 +118,7 @@ export default function WhatWeServe() {
         </div>
 
         {/* Scrubbed Feast Video Frame: 100% Full-Screen Edge-to-Edge */}
-        <div className="absolute inset-0 w-full h-full overflow-hidden">
+        <div data-cursor="scrub" className="absolute inset-0 w-full h-full overflow-hidden">
           <VideoScrubber
             videoSrc="/assets/videos/exploded-thali.mp4"
             fallbackImage="/assets/photos/img-poster.jpg"

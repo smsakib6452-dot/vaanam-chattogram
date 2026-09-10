@@ -9,6 +9,7 @@ import EditorialPreloader from "@/components/loader/EditorialPreloader";
 import CustomCursor from "@/components/cursor/CustomCursor";
 import EditorialNav from "@/components/navigation/EditorialNav";
 import ReservationModal from "@/components/modal/ReservationModal";
+import SpiceParticleCanvas from "@/components/3d/SpiceParticleCanvas";
 
 import HeroSection from "@/components/sections/HeroSection";
 import BeveragesShowcase from "@/components/sections/BeveragesShowcase";
@@ -69,6 +70,9 @@ export default function Home() {
     <main className="relative bg-[#FAFAF8] text-[#2B2320] min-h-screen selection:bg-[#2B2320] selection:text-[#FAFAF8]">
       {/* 2-3% Subtle Grain Noise Overlay across canvas */}
       <div className="noise-overlay" aria-hidden="true" />
+
+      {/* Ambient 3D Spice Particle Canvas (Rising Steam, Cardamom Pods & Turmeric Dust) */}
+      <SpiceParticleCanvas />
 
       {/* 1. Editorial Preloader (< 1.5s with staggered letter reveal) */}
       <EditorialPreloader onComplete={() => setIsPreloaded(true)} />

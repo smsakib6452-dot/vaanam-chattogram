@@ -12,12 +12,12 @@ export function resolveAsset(path: string): string {
   const base = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
   if (path.startsWith("http") || (base && path.startsWith(base))) {
-    return path;
+    return encodeURI(decodeURI(path));
   }
 
   // Normalize leading slash
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
-  return `${base}${cleanPath}`;
+  return encodeURI(decodeURI(`${base}${cleanPath}`));
 }
 
 export interface MediaFallbackConfig {

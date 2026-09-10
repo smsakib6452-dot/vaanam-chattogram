@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { X, Check, Calendar, Users, Clock, Sparkles } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { X, Check, Calendar, Users, Clock } from "lucide-react";
 
 interface ReservationModalProps {
   isOpen: boolean;
@@ -21,6 +21,17 @@ export default function ReservationModal({ isOpen, onClose }: ReservationModalPr
     notes: "",
   });
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -37,6 +48,9 @@ export default function ReservationModal({ isOpen, onClose }: ReservationModalPr
     <div
       role="dialog"
       aria-modal="true"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
       className="fixed inset-0 z-[100000] flex items-center justify-center p-4 sm:p-6 bg-[rgba(43,35,32,0.6)] backdrop-blur-md transition-all duration-300"
     >
       <div
@@ -50,7 +64,7 @@ export default function ReservationModal({ isOpen, onClose }: ReservationModalPr
           onClick={onClose}
           type="button"
           aria-label="Close reservation modal"
-          className="absolute top-6 right-6 p-2 rounded-full border border-[rgba(43,35,32,0.12)] hover:border-[#2B2320] hover:bg-[#2B2320] hover:text-[#FAFAF8] transition-all duration-200 cursor-pointer"
+          className="absolute top-6 right-6 p-2.5 rounded-full border border-[rgba(43,35,32,0.14)] bg-white/80 hover:border-[#2B2320] hover:bg-[#2B2320] hover:text-[#FAFAF8] transition-all duration-200 cursor-pointer shadow-xs active:scale-95"
         >
           <X className="w-4 h-4" />
         </button>
@@ -59,7 +73,7 @@ export default function ReservationModal({ isOpen, onClose }: ReservationModalPr
           <div>
             {/* Header */}
             <div className="border-b border-[rgba(43,35,32,0.08)] pb-6 mb-8">
-              <span className="text-[10px] uppercase tracking-[0.3em] font-mono text-[#C86D3C] block mb-2">
+              <span className="text-[10px] uppercase tracking-[0.3em] font-mono text-[#C86D3C] block mb-2 font-semibold">
                 Private Dining & Table Reservation
               </span>
               <h2 className="font-fraunces text-3xl sm:text-4xl font-light tracking-tight text-[#2B2320]">
@@ -93,14 +107,17 @@ export default function ReservationModal({ isOpen, onClose }: ReservationModalPr
                       key={exp.title}
                       type="button"
                       onClick={() => setExperience(exp.title)}
-                      className={`p-4 text-left border rounded-xl transition-all duration-200 cursor-pointer ${
+                      className={`p-4 text-left border rounded-2xl transition-all duration-300 cursor-pointer ${
                         experience === exp.title
-                          ? "border-[#2B2320] bg-[#FAF8F5] ring-1 ring-[#2B2320]"
-                          : "border-[rgba(43,35,32,0.12)] hover:border-[rgba(43,35,32,0.3)]"
+                          ? "border-[#C23B22] bg-[rgba(194,59,34,0.04)] ring-2 ring-[#C23B22]/20 shadow-sm -translate-y-0.5"
+                          : "border-[rgba(43,35,32,0.12)] bg-white/70 hover:border-[rgba(43,35,32,0.25)] hover:bg-white"
                       }`}
                     >
-                      <div className="text-xs font-medium text-[#2B2320]">{exp.title}</div>
-                      <div className="text-[10px] text-[#C86D3C] font-mono mt-1">{exp.tag}</div>
+                      <div className="flex items-center justify-between">
+                        <div className="text-xs font-semibold text-[#2B2320]">{exp.title}</div>
+                        <span className={`w-2 h-2 rounded-full ${experience === exp.title ? 'bg-[#C23B22]' : 'bg-[rgba(43,35,32,0.2)]'}`} />
+                      </div>
+                      <div className="text-[10px] text-[#C86D3C] font-mono mt-1 font-semibold">{exp.tag}</div>
                       <div className="text-[11px] font-inter text-[#61534E] mt-2 leading-snug">{exp.desc}</div>
                     </button>
                   ))}
@@ -205,9 +222,10 @@ export default function ReservationModal({ isOpen, onClose }: ReservationModalPr
                 </span>
                 <button
                   type="submit"
-                  className="px-8 py-3.5 bg-[#2B2320] text-[#FAFAF8] rounded-full text-xs font-medium uppercase tracking-widest hover:bg-[#C86D3C] transition-colors duration-300 shadow-md cursor-pointer"
+                  className="btn-luxury-primary px-8 py-3.5 text-xs font-semibold uppercase tracking-widest shadow-xl group"
                 >
-                  Confirm Table Reservation
+                  <span>Confirm Table Reservation</span>
+                  <span className="ml-2 inline-block group-hover:translate-x-1 transition-transform font-mono">→</span>
                 </button>
               </div>
             </form>
@@ -215,11 +233,11 @@ export default function ReservationModal({ isOpen, onClose }: ReservationModalPr
         ) : (
           /* Confirmation View */
           <div className="text-center py-8">
-            <div className="w-14 h-14 mx-auto rounded-full bg-[#FAFAF8] border-2 border-[#C86D3C] text-[#C86D3C] flex items-center justify-center mb-6">
+            <div className="w-14 h-14 mx-auto rounded-full bg-[#FAFAF8] border-2 border-[#C86D3C] text-[#C86D3C] flex items-center justify-center mb-6 shadow-sm">
               <Check className="w-7 h-7 stroke-[2.5]" />
             </div>
 
-            <span className="text-[10px] uppercase tracking-[0.3em] font-mono text-[#C86D3C] block mb-2">
+            <span className="text-[10px] uppercase tracking-[0.3em] font-mono text-[#C86D3C] block mb-2 font-semibold">
               Reservation Confirmed
             </span>
 
@@ -232,7 +250,7 @@ export default function ReservationModal({ isOpen, onClose }: ReservationModalPr
               <span className="font-medium text-[#2B2320]">{formData.email || "your email"}</span>.
             </p>
 
-            <div className="bg-[#FAF8F5] border border-[rgba(43,35,32,0.08)] rounded-xl p-6 max-w-md mx-auto text-left mb-8 space-y-2 text-xs font-mono">
+            <div className="bg-[#FAF8F5] border border-[rgba(43,35,32,0.08)] rounded-2xl p-6 max-w-md mx-auto text-left mb-8 space-y-2 text-xs font-mono shadow-sm">
               <div className="flex justify-between text-[#61534E]">
                 <span>Experience:</span>
                 <span className="text-[#2B2320] text-right font-medium">{experience}</span>
@@ -258,7 +276,7 @@ export default function ReservationModal({ isOpen, onClose }: ReservationModalPr
             <button
               type="button"
               onClick={handleReset}
-              className="px-8 py-3 bg-[#2B2320] text-[#FAFAF8] rounded-full text-xs font-medium uppercase tracking-widest hover:bg-[#C86D3C] transition-colors duration-300 cursor-pointer"
+              className="btn-luxury-secondary px-9 py-3.5 text-xs font-semibold uppercase tracking-widest shadow-md"
             >
               Return to Table Exploration
             </button>

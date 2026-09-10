@@ -110,7 +110,7 @@ export default function TextureGallery() {
             <div className="flex items-center gap-2 mb-2">
               <span className="w-2 h-2 rounded-full bg-[#E38A2C]" />
               <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#61534E] font-semibold">
-                07 — SENSORY ARCHIVE · INGREDIENT & TEXTURE
+                08 — SENSORY ARCHIVE · INGREDIENT & TEXTURE
               </span>
             </div>
             <h2 className="font-fraunces text-3xl sm:text-5xl font-light text-[#2B2320]">
@@ -124,7 +124,10 @@ export default function TextureGallery() {
       </div>
 
       {/* Horizontal Scrolling Track */}
-      <div className="w-full overflow-x-auto md:overflow-visible scrollbar-none px-6 sm:px-12">
+      <div
+        data-cursor="scrub"
+        className="w-full overflow-x-auto md:overflow-visible scrollbar-none px-6 sm:px-12"
+      >
         <div
           ref={trackRef}
           className="flex gap-6 sm:gap-8 will-change-transform pb-6 md:pb-0"
@@ -132,7 +135,8 @@ export default function TextureGallery() {
           {GALLERY_ITEMS.map((item) => (
             <div
               key={item.id}
-              className="w-[85vw] sm:w-[400px] md:w-[460px] shrink-0 bg-[#FAF8F5] border border-[rgba(43,35,32,0.1)] rounded-3xl p-5 shadow-lg group hover:shadow-2xl transition-all duration-500 relative overflow-hidden"
+              data-cursor="view"
+              className="w-[85vw] sm:w-[400px] md:w-[460px] shrink-0 bg-[#FAF8F5] border border-[rgba(43,35,32,0.1)] rounded-3xl p-5 shadow-lg group hover:shadow-2xl transition-all duration-500 relative overflow-hidden cursor-pointer"
             >
               <div className="relative aspect-[3/4] rounded-2xl overflow-hidden mb-4 bg-[#ECE7DE]">
                 <div className="w-full h-full relative gallery-img overflow-hidden">

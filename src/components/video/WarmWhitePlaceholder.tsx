@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Sparkles, Film, Image as ImageIcon } from "lucide-react";
+import { Film, Image as ImageIcon } from "lucide-react";
 
 interface WarmWhitePlaceholderProps {
   label: string;

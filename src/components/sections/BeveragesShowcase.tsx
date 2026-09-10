@@ -4,7 +4,6 @@ import React, { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import VideoScrubber from "@/components/video/VideoScrubber";
-import { Coffee, Flame, Droplets, Clock, Sparkles } from "lucide-react";
 
 const CHA_VARIETIES = [
   {
@@ -122,38 +121,46 @@ export default function BeveragesShowcase() {
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
         {/* Left Column: Responsive Video Showcase (Switches between Cha and Coffee) */}
         <div ref={leftColRef} className="lg:col-span-6 order-2 lg:order-1">
-          <div className="relative aspect-[4/5] sm:aspect-[1/1] max-w-xl mx-auto rounded-3xl overflow-hidden shadow-2xl bg-[#F5F2EB] border border-[rgba(43,35,32,0.08)]">
-            {activeCategory === "cha" ? (
-              <VideoScrubber
-                videoSrc="/assets/videos/hero-chai-pour.mp4"
-                fallbackImage="/assets/photos/img-cutting-chai.jpg"
-                alt="Steaming Matir Kulhad Cha poured in daylight"
-                accentColor="#6B3F1D"
-                label="MATIR KULHAD CHA POUR"
-              />
-            ) : (
-              <VideoScrubber
-                videoSrc="/assets/videos/filter-coffee-pour.mp4"
-                fallbackImage="/assets/photos/img-filter-coffee.jpg"
-                alt="Artisanal slow-dripped filter coffee decoction poured into brass tumbler in daylight"
-                accentColor="#8A5A2B"
-                label="FILTER COFFEE DECOCTION"
-              />
-            )}
+          <div
+            data-cursor="scrub"
+            className="relative aspect-[4/5] sm:aspect-[1/1] max-w-xl mx-auto rounded-3xl overflow-hidden shadow-2xl bg-[#F5F2EB] border border-[rgba(43,35,32,0.08)]"
+          >
+            <div
+              key={activeCategory}
+              className="w-full h-full transition-opacity duration-500 ease-out"
+            >
+              {activeCategory === "cha" ? (
+                <VideoScrubber
+                  videoSrc="/assets/videos/hero-chai-pour.mp4"
+                  fallbackImage="/assets/photos/img-cutting-chai.jpg"
+                  alt="Steaming Matir Kulhad Cha poured in daylight"
+                  accentColor="#6B3F1D"
+                  label="MATIR KULHAD CHA POUR"
+                />
+              ) : (
+                <VideoScrubber
+                  videoSrc="/assets/videos/filter-coffee-pour.mp4"
+                  fallbackImage="/assets/photos/img-filter-coffee.jpg"
+                  alt="Artisanal slow-dripped filter coffee decoction poured into brass tumbler in daylight"
+                  accentColor="#8A5A2B"
+                  label="FILTER COFFEE DECOCTION"
+                />
+              )}
+            </div>
           </div>
         </div>
 
         {/* Right Column: Menu Options & Details */}
         <div ref={rightColRef} className="lg:col-span-6 order-1 lg:order-2 space-y-7">
           {/* Interactive Category Selector Pill */}
-          <div className="reveal-item flex items-center gap-2 bg-[#FAF8F5] border border-[rgba(43,35,32,0.1)] p-1.5 rounded-full shadow-xs w-fit">
+          <div className="reveal-item flex items-center gap-1.5 bg-[rgba(250,250,248,0.96)] backdrop-blur-md border border-[rgba(43,35,32,0.14)] p-1.5 rounded-full shadow-md w-fit">
             <button
               type="button"
               onClick={() => setActiveCategory("cha")}
-              className={`flex items-center gap-2 px-5 py-2 rounded-full text-xs font-mono uppercase tracking-wider font-semibold transition-all duration-300 cursor-pointer ${
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-xs font-mono uppercase tracking-wider font-semibold transition-all duration-300 cursor-pointer ${
                 activeCategory === "cha"
-                  ? "bg-[#6B3F1D] text-[#FAFAF8] shadow-sm"
-                  : "text-[#61534E] hover:text-[#6B3F1D]"
+                  ? "bg-gradient-to-r from-[#6B3F1D] to-[#8A5A2B] text-[#FAFAF8] shadow-md -translate-y-0.5 ring-1 ring-white/25"
+                  : "text-[#61534E] hover:text-[#6B3F1D] hover:bg-[rgba(107,63,29,0.08)]"
               }`}
             >
               <span>✦ Artisanal Cha (চা)</span>
@@ -162,10 +169,10 @@ export default function BeveragesShowcase() {
             <button
               type="button"
               onClick={() => setActiveCategory("coffee")}
-              className={`flex items-center gap-2 px-5 py-2 rounded-full text-xs font-mono uppercase tracking-wider font-semibold transition-all duration-300 cursor-pointer ${
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-xs font-mono uppercase tracking-wider font-semibold transition-all duration-300 cursor-pointer ${
                 activeCategory === "coffee"
-                  ? "bg-[#8A5A2B] text-[#FAFAF8] shadow-sm"
-                  : "text-[#61534E] hover:text-[#8A5A2B]"
+                  ? "bg-gradient-to-r from-[#8A5A2B] to-[#5C3A1E] text-[#FAFAF8] shadow-md -translate-y-0.5 ring-1 ring-white/25"
+                  : "text-[#61534E] hover:text-[#8A5A2B] hover:bg-[rgba(138,90,43,0.08)]"
               }`}
             >
               <span>✦ Roasted Coffee (কফি)</span>
@@ -210,7 +217,8 @@ export default function BeveragesShowcase() {
               ? CHA_VARIETIES.map((item) => (
                   <div
                     key={item.id}
-                    className="bg-[rgba(250,250,248,0.95)] border border-[rgba(107,63,29,0.16)] p-4 rounded-2xl shadow-xs hover:border-[#6B3F1D] transition-all duration-300"
+                    data-cursor="view"
+                    className="bg-[rgba(250,250,248,0.95)] border border-[rgba(107,63,29,0.16)] p-4 rounded-2xl shadow-xs hover:border-[#6B3F1D] transition-all duration-300 cursor-pointer"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-baseline gap-2">
@@ -233,7 +241,8 @@ export default function BeveragesShowcase() {
               : COFFEE_VARIETIES.map((item) => (
                   <div
                     key={item.id}
-                    className="bg-[rgba(250,250,248,0.95)] border border-[rgba(138,90,43,0.16)] p-4 rounded-2xl shadow-xs hover:border-[#8A5A2B] transition-all duration-300"
+                    data-cursor="view"
+                    className="bg-[rgba(250,250,248,0.95)] border border-[rgba(138,90,43,0.16)] p-4 rounded-2xl shadow-xs hover:border-[#8A5A2B] transition-all duration-300 cursor-pointer"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-baseline gap-2">

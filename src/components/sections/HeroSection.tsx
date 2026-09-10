@@ -105,7 +105,7 @@ export default function HeroSection({ onOpenReservation }: HeroSectionProps) {
         className="sticky top-0 left-0 w-full h-screen overflow-hidden flex items-center justify-center"
       >
         {/* Full-width Cinematic Video Container: 100% Full Bleed Edge-to-Edge */}
-        <div className="absolute inset-0 w-full h-full overflow-hidden">
+        <div data-cursor="scrub" className="absolute inset-0 w-full h-full overflow-hidden">
           <div className="w-full h-full relative will-change-transform overflow-hidden">
             <VideoScrubber
               videoSrc="/assets/videos/hero-banquet.mp4"
@@ -154,19 +154,21 @@ export default function HeroSection({ onOpenReservation }: HeroSectionProps) {
             </p>
           </div>
 
-          <div className="mt-5 sm:mt-6 flex items-center gap-4 pointer-events-auto">
+          <div className="mt-5 sm:mt-6 flex flex-wrap items-center justify-center gap-3 sm:gap-4 pointer-events-auto">
             <button
               type="button"
               onClick={onOpenReservation}
-              className="px-7 py-3.5 rounded-full bg-[#C23B22] text-[#FAFAF8] text-xs font-semibold uppercase tracking-widest hover:bg-[#2B2320] transition-all duration-300 shadow-md cursor-pointer"
+              className="btn-luxury-primary px-8 py-4 text-xs font-semibold uppercase tracking-[0.2em] shadow-xl group"
             >
-              Reserve Table
+              <span>Reserve Table</span>
+              <span className="ml-2.5 inline-block group-hover:translate-x-1 transition-transform font-mono">→</span>
             </button>
             <a
               href="#beverages"
-              className="px-7 py-3.5 rounded-full bg-[rgba(250,250,248,0.94)] text-[#2B2320] text-xs font-semibold uppercase tracking-widest border border-[rgba(43,35,32,0.18)] hover:border-[#6B3F1D] transition-all duration-300 shadow-sm"
+              className="btn-luxury-secondary px-8 py-4 text-xs font-semibold uppercase tracking-[0.2em] group"
             >
-              Explore Menu ↓
+              <span>Explore Menu</span>
+              <span className="ml-2 inline-block group-hover:translate-y-0.5 transition-transform text-[#C23B22]">↓</span>
             </a>
           </div>
         </div>

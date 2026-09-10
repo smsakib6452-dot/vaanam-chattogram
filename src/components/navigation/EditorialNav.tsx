@@ -2,14 +2,28 @@
 
 import React, { useEffect, useState } from "react";
 import CulinarySoundscape from "@/components/audio/CulinarySoundscape";
+import { Menu, X, ArrowRight, Phone, MapPin } from "lucide-react";
 
 interface EditorialNavProps {
   onOpenReservation: () => void;
 }
 
+const NAV_LINKS = [
+  { href: "#hero", num: "01", label: "Origin & Prelude" },
+  { href: "#beverages", num: "02", label: "Artisanal Cha & Coffee" },
+  { href: "#serve", num: "03", label: "The Assembled Feast" },
+  { href: "#singara", num: "04", label: "Exploded Singara" },
+  { href: "#sauces", num: "05", label: "Kasundi & Relishes" },
+  { href: "#sweets", num: "06", label: "Bengal Sweets" },
+  { href: "#drinks", num: "07", label: "Cold Coastal Fusions" },
+  { href: "#gallery", num: "08", label: "Sensory Archive" },
+  { href: "#reservation", num: "09", label: "Reserve Table" },
+];
+
 export default function EditorialNav({ onOpenReservation }: EditorialNavProps) {
   const [scrolled, setScrolled] = useState<boolean>(false);
   const [timeChattogram, setTimeChattogram] = useState<string>("");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,6 +51,26 @@ export default function EditorialNav({ onOpenReservation }: EditorialNavProps) {
     };
   }, []);
 
+  // Lock body scroll when mobile drawer is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMobileMenuOpen]);
+
+  const handleMobileNavClick = (href: string) => {
+    setIsMobileMenuOpen(false);
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <>
       <header
@@ -62,7 +96,7 @@ export default function EditorialNav({ onOpenReservation }: EditorialNavProps) {
             </a>
           </div>
 
-          {/* Narrative Section Links inside Frosted Pill (Strictly Single-Line with whitespace-nowrap) */}
+          {/* Desktop Narrative Section Links inside Frosted Pill */}
           <nav className="hidden lg:flex items-center gap-3.5 xl:gap-5 text-[10px] uppercase tracking-[0.16em] font-semibold text-[#2B2320] bg-[rgba(250,250,248,0.92)] backdrop-blur-md px-5 py-2 rounded-full border border-[rgba(43,35,32,0.1)] shadow-sm">
             <a href="#beverages" className="editorial-link whitespace-nowrap hover:text-[#6B3F1D] transition-colors">
               <span className="text-[#96867F] font-mono text-[9px] mr-1 font-normal">02 /</span>Cha & Coffee
@@ -91,13 +125,99 @@ export default function EditorialNav({ onOpenReservation }: EditorialNavProps) {
             <button
               type="button"
               onClick={onOpenReservation}
-              className="px-4 sm:px-5 py-2 rounded-full bg-[#C23B22] text-[#FAFAF8] text-[10px] sm:text-[11px] uppercase tracking-widest font-semibold hover:bg-[#2B2320] transition-all duration-300 shadow-sm cursor-pointer whitespace-nowrap"
+              className="btn-luxury-primary px-4 sm:px-5 py-2 text-[10px] sm:text-[11px] uppercase tracking-widest font-semibold whitespace-nowrap gap-1.5 shadow-md group"
             >
-              Reserve Table
+              <span>Reserve Table</span>
+              <span className="text-white/70 group-hover:text-white group-hover:translate-x-0.5 transition-transform text-xs">→</span>
+            </button>
+
+            {/* Mobile Navigation Drawer Toggle Button */}
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={isMobileMenuOpen}
+              className="lg:hidden p-2.5 rounded-full border border-[rgba(43,35,32,0.14)] bg-[rgba(250,250,248,0.95)] backdrop-blur-md text-[#2B2320] hover:bg-[#2B2320] hover:text-[#FAFAF8] hover:border-[#2B2320] transition-all cursor-pointer shadow-xs active:scale-95"
+            >
+              {isMobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>
           </div>
         </div>
       </header>
+
+      {/* Full-Screen Luxury Editorial Mobile Drawer */}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Mobile Navigation Menu"
+        className={`fixed inset-0 z-40 lg:hidden transition-all duration-500 flex flex-col justify-between p-6 sm:p-10 pt-24 bg-[rgba(250,250,248,0.98)] backdrop-blur-2xl ${
+          isMobileMenuOpen
+            ? "opacity-100 pointer-events-auto translate-y-0"
+            : "opacity-0 pointer-events-none -translate-y-6"
+        }`}
+      >
+        {/* Drawer Header Info */}
+        <div className="flex items-center justify-between border-b border-[rgba(43,35,32,0.08)] pb-4">
+          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.2em] text-[#61534E]">
+            <span className="w-2 h-2 rounded-full bg-[#E38A2C] animate-pulse" />
+            <span>Chattogram BST: {timeChattogram || "12:00:00"}</span>
+          </div>
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[#96867F]">
+            EST. 2026
+          </span>
+        </div>
+
+        {/* Narrative Chapter Links */}
+        <nav className="my-auto py-6 space-y-3 sm:space-y-4 overflow-y-auto max-h-[55vh] scrollbar-none">
+          {NAV_LINKS.map((link, idx) => (
+            <button
+              key={link.href}
+              type="button"
+              onClick={() => handleMobileNavClick(link.href)}
+              className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-[rgba(43,35,32,0.04)] transition-all text-left group cursor-pointer"
+              style={{
+                transitionDelay: `${idx * 40}ms`,
+              }}
+            >
+              <div className="flex items-baseline gap-3">
+                <span className="font-mono text-xs text-[#C86D3C] font-semibold">
+                  {link.num}
+                </span>
+                <span className="font-fraunces text-2xl sm:text-3xl font-light text-[#2B2320] group-hover:text-[#C23B22] transition-colors">
+                  {link.label}
+                </span>
+              </div>
+              <ArrowRight className="w-4 h-4 text-[#96867F] group-hover:translate-x-1 group-hover:text-[#C23B22] transition-all" />
+            </button>
+          ))}
+        </nav>
+
+        {/* Drawer Bottom Actions & Contacts */}
+        <div className="pt-4 border-t border-[rgba(43,35,32,0.08)] space-y-4">
+          <div className="grid grid-cols-2 gap-3 text-[10px] font-mono text-[#61534E]">
+            <div className="flex items-center gap-2">
+              <MapPin className="w-3.5 h-3.5 text-[#C23B22]" />
+              <span>GEC Circle, CTG</span>
+            </div>
+            <div className="flex items-center gap-2 justify-end">
+              <Phone className="w-3.5 h-3.5 text-[#C23B22]" />
+              <span>+880 1819-VAANAM</span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              onOpenReservation();
+            }}
+            className="btn-luxury-primary w-full py-4 text-xs font-semibold uppercase tracking-widest shadow-xl group"
+          >
+            <span>Reserve A Table</span>
+            <span className="ml-2 inline-block group-hover:translate-x-1 transition-transform font-mono">→</span>
+          </button>
+        </div>
+      </div>
 
       {/* Repositioned Chattogram Live Clock: Discreet, Elegant Floating Bottom-Left Pill */}
       <div
@@ -112,3 +232,4 @@ export default function EditorialNav({ onOpenReservation }: EditorialNavProps) {
     </>
   );
 }
+

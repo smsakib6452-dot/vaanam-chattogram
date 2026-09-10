@@ -86,7 +86,7 @@ export default function SignatureSauces() {
         </div>
 
         {/* Video Frame: 100% Full-Screen Edge-to-Edge */}
-        <div className="absolute inset-0 w-full h-full overflow-hidden">
+        <div data-cursor="scrub" className="absolute inset-0 w-full h-full overflow-hidden">
           <div className="w-full h-full relative">
             <VideoScrubber
               videoSrc="/videos/video-4 (2).mp4"
