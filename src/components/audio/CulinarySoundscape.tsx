@@ -9,164 +9,144 @@ export default function CulinarySoundscape() {
   const masterGainRef = useRef<GainNode | null>(null);
   const activeNodesRef = useRef<{
     noiseSource?: AudioBufferSourceNode;
-    brownNoiseSource?: AudioBufferSourceNode;
+    droneGain?: GainNode;
     oscillators: OscillatorNode[];
     lfo?: OscillatorNode;
+    lfoGain?: GainNode;
   }>({
     oscillators: [],
   });
 
-  // Soft, warm organic entrance bell (gentle 216Hz singing bowl with long exponential decay)
-  const playWarmSingingBowl = (ctx: AudioContext) => {
+  // Soft welcoming singing bowl chime when sound turns ON
+  const playWelcomeChime = (ctx: AudioContext, destination: AudioNode) => {
     try {
       const now = ctx.currentTime;
-      const osc = ctx.createOscillator();
-      const overtone = ctx.createOscillator();
-      const gain = ctx.createGain();
+      const osc1 = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
+      const chimeGain = ctx.createGain();
       const filter = ctx.createBiquadFilter();
 
-      // Warm 216 Hz (Deep meditative tone, no harsh highs)
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(216, now);
+      // Warm peaceful harmonic chime (330Hz E4 and 660Hz E5)
+      osc1.type = "sine";
+      osc1.frequency.setValueAtTime(329.63, now);
 
-      overtone.type = "sine";
-      overtone.frequency.setValueAtTime(432, now);
+      osc2.type = "sine";
+      osc2.frequency.setValueAtTime(659.25, now);
 
       filter.type = "lowpass";
-      filter.frequency.setValueAtTime(450, now);
+      filter.frequency.setValueAtTime(900, now);
 
-      // Very soft gain with long gentle decay over 2.5s
-      gain.gain.setValueAtTime(0.08, now);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.5);
+      chimeGain.gain.setValueAtTime(0.18, now);
+      chimeGain.gain.exponentialRampToValueAtTime(0.0001, now + 3.0);
 
-      osc.connect(filter);
-      overtone.connect(filter);
-      filter.connect(gain);
-      gain.connect(ctx.destination);
+      osc1.connect(filter);
+      osc2.connect(filter);
+      filter.connect(chimeGain);
+      chimeGain.connect(destination);
 
-      osc.start(now);
-      overtone.start(now);
-      osc.stop(now + 2.6);
-      overtone.stop(now + 2.6);
+      osc1.start(now);
+      osc2.start(now);
+      osc1.stop(now + 3.1);
+      osc2.stop(now + 3.1);
     } catch {
       // Safe skip
     }
   };
 
-  // Start Organic Coastal Soundscape: Deep Ocean Breeze + Warm Tea Simmer + Low Acoustic Pad
-  const startCoastalSoundscape = (ctx: AudioContext, masterGain: GainNode) => {
+  // Start continuous, infinite ambient soundscape (audible on phones, laptops, and headphones)
+  const startContinuousSoundscape = (ctx: AudioContext, masterGain: GainNode) => {
     const now = ctx.currentTime;
     const sampleRate = ctx.sampleRate;
-    const bufferDuration = 5; // 5 seconds seamless loop
+    const bufferDuration = 4; // 4 seconds seamless loop
     const bufferSize = sampleRate * bufferDuration;
 
-    // 1. Deep Brown Noise (1/f²): The peaceful, rhythmic breathing of the Bay of Bengal coast
-    const brownBuffer = ctx.createBuffer(1, bufferSize, sampleRate);
-    const brownData = brownBuffer.getChannelData(0);
-    let lastOut = 0.0;
-    for (let i = 0; i < bufferSize; i++) {
-      const white = Math.random() * 2 - 1;
-      brownData[i] = (lastOut + 0.025 * white) / 1.025;
-      lastOut = brownData[i];
-      brownData[i] *= 3.5; // Calibrate volume
-    }
+    // --- LAYER 1: WARM BENGAL HARMONIUM / TANPURA MEDITATION CHORD ---
+    // Frequencies: A3 (220Hz), E4 (330Hz), A4 (440Hz), B3 (246.9Hz)
+    // These frequencies are in the warm, audible sweet spot for all phone & laptop speakers.
+    const droneFilter = ctx.createBiquadFilter();
+    droneFilter.type = "lowpass";
+    droneFilter.frequency.setValueAtTime(750, now);
+    droneFilter.Q.setValueAtTime(1.2, now);
 
-    const brownSource = ctx.createBufferSource();
-    brownSource.buffer = brownBuffer;
-    brownSource.loop = true;
+    const droneGain = ctx.createGain();
+    droneGain.gain.setValueAtTime(0.28, now);
 
-    // Dual-stage warm low-pass filter: cuts all harsh treble, leaves only deep gentle wave murmur
-    const brownFilter = ctx.createBiquadFilter();
-    brownFilter.type = "lowpass";
-    brownFilter.frequency.setValueAtTime(240, now);
-    brownFilter.Q.setValueAtTime(0.7, now);
+    // Slow breathing LFO filter modulation (0.1Hz = 10s wave cycle)
+    const lfo = ctx.createOscillator();
+    lfo.type = "sine";
+    lfo.frequency.setValueAtTime(0.1, now);
 
-    // Slow LFO for gentle coastal swell (0.06Hz = 16-second breathing ocean wave)
-    const swellLfo = ctx.createOscillator();
-    swellLfo.frequency.setValueAtTime(0.06, now);
+    const lfoGain = ctx.createGain();
+    lfoGain.gain.setValueAtTime(180, now); // Sweeps filter frequency between 570Hz and 930Hz
 
-    const swellGain = ctx.createGain();
-    swellGain.gain.setValueAtTime(0.04, now);
+    lfo.connect(lfoGain);
+    lfoGain.connect(droneFilter.frequency);
+    lfo.start(now);
 
-    const brownGain = ctx.createGain();
-    brownGain.gain.setValueAtTime(0.12, now);
+    droneFilter.connect(droneGain);
+    droneGain.connect(masterGain);
 
-    swellLfo.connect(swellGain);
-    swellGain.connect(brownGain.gain);
-    swellLfo.start(now);
+    const chords = [
+      { freq: 220.0, type: "sine" as OscillatorType, detune: 0 },
+      { freq: 220.0, type: "sine" as OscillatorType, detune: 4 }, // Chorus warmth
+      { freq: 329.63, type: "sine" as OscillatorType, detune: -2 }, // Warm fifth
+      { freq: 440.0, type: "triangle" as OscillatorType, detune: 0 }, // Velvety harmonic
+    ];
 
-    brownSource.connect(brownFilter);
-    brownFilter.connect(brownGain);
-    brownGain.connect(masterGain);
-    brownSource.start(now);
+    const oscNodes: OscillatorNode[] = [];
+    chords.forEach((note) => {
+      const osc = ctx.createOscillator();
+      osc.type = note.type;
+      osc.frequency.setValueAtTime(note.freq, now);
+      osc.detune.setValueAtTime(note.detune, now);
+      osc.connect(droneFilter);
+      osc.start(now);
+      oscNodes.push(osc);
+    });
 
-    // 2. Ultra-Soft Pink Noise: Gentle warm tea kettle simmer (velvety warmth, no high hissing)
-    const pinkBuffer = ctx.createBuffer(1, bufferSize, sampleRate);
-    const pinkData = pinkBuffer.getChannelData(0);
+    // --- LAYER 2: ORGANIC TEA SIMMER & COASTAL BREEZE (PINK NOISE) ---
+    // Creates a soothing, gentle sizzle/simmer backdrop (like steaming tea in a clay cup)
+    const noiseBuffer = ctx.createBuffer(1, bufferSize, sampleRate);
+    const channelData = noiseBuffer.getChannelData(0);
     let b0 = 0, b1 = 0, b2 = 0;
+
     for (let i = 0; i < bufferSize; i++) {
       const white = Math.random() * 2 - 1;
       b0 = 0.99 * b0 + white * 0.05;
       b1 = 0.95 * b1 + white * 0.07;
       b2 = 0.85 * b2 + white * 0.1;
-      pinkData[i] = (b0 + b1 + b2) * 0.08;
+      channelData[i] = (b0 + b1 + b2) * 0.15;
     }
 
-    const pinkSource = ctx.createBufferSource();
-    pinkSource.buffer = pinkBuffer;
-    pinkSource.loop = true;
+    const noiseSource = ctx.createBufferSource();
+    noiseSource.buffer = noiseBuffer;
+    noiseSource.loop = true;
 
-    const pinkFilter = ctx.createBiquadFilter();
-    pinkFilter.type = "lowpass";
-    pinkFilter.frequency.setValueAtTime(380, now); // Warm cut at 380Hz
+    const noiseFilter = ctx.createBiquadFilter();
+    noiseFilter.type = "bandpass";
+    noiseFilter.frequency.setValueAtTime(950, now);
+    noiseFilter.Q.setValueAtTime(1.0, now);
 
-    const pinkGain = ctx.createGain();
-    pinkGain.gain.setValueAtTime(0.08, now);
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.18, now);
 
-    pinkSource.connect(pinkFilter);
-    pinkFilter.connect(pinkGain);
-    pinkGain.connect(masterGain);
-    pinkSource.start(now);
-
-    // 3. Low Meditative Acoustic Tanpura Pad (108Hz & 162Hz deep warm undertones)
-    const droneGain = ctx.createGain();
-    droneGain.gain.setValueAtTime(0.06, now);
-
-    const droneFilter = ctx.createBiquadFilter();
-    droneFilter.type = "lowpass";
-    droneFilter.frequency.setValueAtTime(220, now);
-    droneFilter.connect(droneGain);
-    droneGain.connect(masterGain);
-
-    const droneOscs: OscillatorNode[] = [];
-    const lowChord = [108, 162, 216]; // Deep warm natural harmonic series
-
-    lowChord.forEach((freq, idx) => {
-      const osc = ctx.createOscillator();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(freq + (idx === 1 ? 0.3 : 0), now); // Natural warm chorus
-      osc.connect(droneFilter);
-      osc.start(now);
-      droneOscs.push(osc);
-    });
+    noiseSource.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(masterGain);
+    noiseSource.start(now);
 
     activeNodesRef.current = {
-      brownNoiseSource: brownSource,
-      noiseSource: pinkSource,
-      oscillators: droneOscs,
-      lfo: swellLfo,
+      noiseSource,
+      droneGain,
+      oscillators: oscNodes,
+      lfo,
+      lfoGain,
     };
   };
 
   // Stop Soundscape Smoothly
-  const stopCoastalSoundscape = () => {
+  const stopContinuousSoundscape = () => {
     const nodes = activeNodesRef.current;
-    if (nodes.brownNoiseSource) {
-      try {
-        nodes.brownNoiseSource.stop();
-        nodes.brownNoiseSource.disconnect();
-      } catch {}
-    }
     if (nodes.noiseSource) {
       try {
         nodes.noiseSource.stop();
@@ -213,31 +193,31 @@ export default function CulinarySoundscape() {
         masterGainRef.current = masterGain;
       }
 
-      const gain = masterGainRef.current;
+      const masterGain = masterGainRef.current;
 
       if (isPlaying) {
-        // Fade out smoothly over 0.6s
-        gain.gain.cancelScheduledValues(ctx.currentTime);
-        gain.gain.setValueAtTime(gain.gain.value, ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.0001, ctx.currentTime + 0.6);
+        // Fade out smoothly over 0.5s
+        masterGain.gain.cancelScheduledValues(ctx.currentTime);
+        masterGain.gain.setValueAtTime(masterGain.gain.value, ctx.currentTime);
+        masterGain.gain.linearRampToValueAtTime(0.0001, ctx.currentTime + 0.5);
 
         setTimeout(() => {
-          stopCoastalSoundscape();
-        }, 650);
+          stopContinuousSoundscape();
+        }, 550);
 
         setIsPlaying(false);
       } else {
-        // Soft singing bowl tone
-        playWarmSingingBowl(ctx);
+        // 1. Play immediate welcoming acoustic tone
+        playWelcomeChime(ctx, masterGain);
 
-        // Start soothing organic coastal atmosphere
-        stopCoastalSoundscape();
-        startCoastalSoundscape(ctx, gain);
+        // 2. Start continuous, non-stop ambient soundscape
+        stopContinuousSoundscape();
+        startContinuousSoundscape(ctx, masterGain);
 
-        // Smoothly fade in master volume to a soothing, comfortable level (0.24)
-        gain.gain.cancelScheduledValues(ctx.currentTime);
-        gain.gain.setValueAtTime(0.001, ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.24, ctx.currentTime + 1.2);
+        // 3. Smoothly fade master volume in to an audible, soothing volume (0.4)
+        masterGain.gain.cancelScheduledValues(ctx.currentTime);
+        masterGain.gain.setValueAtTime(0.001, ctx.currentTime);
+        masterGain.gain.linearRampToValueAtTime(0.38, ctx.currentTime + 0.8);
 
         setIsPlaying(true);
       }
@@ -248,7 +228,7 @@ export default function CulinarySoundscape() {
 
   useEffect(() => {
     return () => {
-      stopCoastalSoundscape();
+      stopContinuousSoundscape();
       if (audioCtxRef.current) {
         try {
           audioCtxRef.current.close();
